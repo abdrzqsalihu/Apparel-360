@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 
-import { ArrowRight } from "lucide-react";
-
-function RecentProducts() {
-  const [recentProducts, setRecentProducts] = useState([]);
+function Shop() {
+  const [allProducts, setAllProducts] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     fetch(
-      "http://localhost/phenomenal/react_php_applications/apparel-360/src/server/api/products.php?limit=4"
+      "http://localhost/phenomenal/react_php_applications/apparel-360/src/server/api/products.php"
     )
       .then((response) => {
         if (!response.ok) {
@@ -17,7 +15,7 @@ function RecentProducts() {
         return response.json();
       })
       .then((data) => {
-        setRecentProducts(data);
+        setAllProducts(data);
       })
       .catch((error) => {
         setError(error);
@@ -27,43 +25,37 @@ function RecentProducts() {
   if (error) {
     return <div>Error: {error.message}</div>;
   }
-
   return (
     <div>
       <section className="mt-6">
         <div className="mx-4 lg:mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="font-medium">Featured Products</h1>
-            </div>
-            <div>
-              <a href="shop" className="flex items-center gap-x-2">
-                <span>See All</span> <ArrowRight size={18} />
-              </a>
+              <h1 className="text-2xl font-semibold">All Products</h1>
             </div>
           </div>
 
           <div className="flex mt-3">
             <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-              {recentProducts.map((recentProducts) => (
-                <a href={`shop/${recentProducts.id}`} key={recentProducts.id}>
+              {allProducts.map((allProducts) => (
+                <a href={`shop/${allProducts.id}`} key={allProducts.id}>
                   <div className="group relative">
                     <div className="aspect-square w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:h-80">
                       <img
-                        src={`/products/${recentProducts.product_image}`}
+                        src={`/products/${allProducts.product_image}`}
                         alt="Product Image"
-                        className="w-full h-full object-cover object-center lg:h-full lg:w-full"
+                        className="w-full h-full object-cover object-center"
                         width={300}
                         height={300}
                       />
                     </div>
-                    <div className="mt-3">
+                    <div className="mt-4">
                       <h3 className="font-medium text-gray-900 group-hover:underline group-hover:underline-offset-4">
-                        {recentProducts.productname}
+                        {allProducts.productname}
                       </h3>
 
                       <p className="mt-1 text-sm text-gray-700">
-                        ${recentProducts.productprice}
+                        ${allProducts.productprice}
                       </p>
                     </div>
                   </div>
@@ -77,4 +69,4 @@ function RecentProducts() {
   );
 }
 
-export default RecentProducts;
+export default Shop;

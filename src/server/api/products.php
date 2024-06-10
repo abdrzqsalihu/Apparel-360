@@ -8,12 +8,26 @@ header("Access-Control-Allow-Headers: Content-Type");
 
 include('../config/config.php');
 $response = array();
+
 if ($conn) {
-    $sql = "SELECT * FROM products";
-    $result = mysqli_query($conn, $sql);
+    $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : null;
+    
+    if ($limit) {
+        // Fetch the most recent products limited by the given number
+        $sql = "SELECT * FROM products ORDER BY id DESC LIMIT ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('i', $limit);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    } else {
+        // Fetch all products
+        $sql = "SELECT * FROM products";
+        $result = mysqli_query($conn, $sql);
+    }
+
     if (mysqli_num_rows($result) > 0) {
         // output data of each row
-        header('Content-Type: JSON');
+        header('Content-Type: application/json');
         $i = 0;
         while($row = mysqli_fetch_assoc($result)) {
             $response[$i]['id'] = $row['id'];
@@ -26,9 +40,10 @@ if ($conn) {
             $i++;
         }
         echo json_encode($response, JSON_PRETTY_PRINT);
+    } else {
+        echo json_encode([]);
     }
-}else {
-    echo'Connection Error';
+} else {
+    echo 'Connection Error';
 }
 ?>
-

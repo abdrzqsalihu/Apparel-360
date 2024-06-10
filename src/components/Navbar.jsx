@@ -13,7 +13,7 @@ function Navbar() {
   };
 
   return (
-    <header className="bg-white mt-6 mx-auto max-w-screen-xl">
+    <header className="bg-white border-b md:border-none pb-3 mt-6 mx-auto max-w-screen-xl">
       <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="hidden md:flex md:items-center">
@@ -109,7 +109,7 @@ function Navbar() {
       <div
         className={`${
           isMenuOpen ? "opacity-100 scale-y-100" : "opacity-0 scale-y-0"
-        } transform origin-top transition-transform duration-300 ease-in-out absolute mt-1 left-0 w-full z-60 md:hidden`}
+        } transform origin-top transition-transform duration-300 ease-in-out absolute mt-4 left-0 w-full z-60 md:hidden z-10`}
       >
         {isMenuOpen && (
           <div className="fixed left-0 w-full bg-white shadow-lg py-3">
