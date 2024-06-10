@@ -16,7 +16,7 @@ function Hero() {
               excepturi, itaque autem porro dolorum sint eum, iusto eaque quod
               nulla qui voluptatum.
             </p>
-            <a href="">
+            <a href="shop">
               <button className="mt-6 md:mt-8 text-white border border-solid rounded-2xl p-2 px-6 text-[12px] md:text-[15px] hover:opacity-80">
                 Shop Now
               </button>

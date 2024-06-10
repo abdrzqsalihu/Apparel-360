@@ -1,11 +1,14 @@
-import Hero from "./pages/Home/Hero";
-import RecentProducts from "./pages/Home/RecentProducts";
+import HomePage from "./pages/Home/Page";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function App() {
   return (
     <>
-      <Hero />
-      <RecentProducts />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }
