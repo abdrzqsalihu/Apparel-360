@@ -11,12 +11,20 @@ $response = array();
 
 if ($conn) {
     $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : null;
+    $id = isset($_GET['id']) ? (int)$_GET['id'] : null;
     
     if ($limit) {
         // Fetch the most recent products limited by the given number
         $sql = "SELECT * FROM products ORDER BY id DESC LIMIT ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('i', $limit);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    } elseif ($id) {
+        // Fetchproducts limited by the id
+        $sql = "SELECT * FROM products WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('i', $id);
         $stmt->execute();
         $result = $stmt->get_result();
     } else {
