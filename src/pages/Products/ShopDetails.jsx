@@ -84,8 +84,9 @@ function ShopDetails() {
                 <select
                   name="size"
                   className="mt-1.5 w-[50%] md:w-full rounded-md border p-1 border-gray-200 text-gray-700 sm:text-sm"
+                  defaultValue={""}
                 >
-                  <option selected disabled></option>
+                  <option value={""} disabled></option>
                   <option value="S">S</option>
                   <option value="M">M</option>
                   <option value="L">L</option>
