@@ -1,6 +1,7 @@
 import { Menu, Phone, ShoppingCart, X } from "lucide-react";
 import { navLinks } from "../utils/constants";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -30,9 +31,9 @@ function Navbar() {
             <nav aria-label="Global">
               <ul className="flex flex-col items-center justify-center gap-2 text-[1.4rem] mt-0 md:mt-12 md:text-[1.6rem] font-bold">
                 <li>
-                  <a
+                  <Link
                     className="text-black transition font-mono flex flex-col items-center"
-                    href="/"
+                    to="/"
                   >
                     <img
                       className="mb-3 hidden md:block"
@@ -41,7 +42,7 @@ function Navbar() {
                       alt="logo"
                     />
                     <span>APPAREL 360</span>
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </nav>
@@ -49,9 +50,9 @@ function Navbar() {
 
           <div className="flex items-center">
             <div className="sm:flex sm:gap-4">
-              <a
+              <Link
                 className="relative inline-block text-sm pr-6 py-2.5 font-medium text-black"
-                href="#"
+                to="/cart"
               >
                 <span className="relative">
                   <ShoppingCart size={28} />
@@ -59,7 +60,7 @@ function Navbar() {
                     0
                   </span>
                 </span>
-              </a>
+              </Link>
 
               <div className="hidden md:flex gap-8">
                 <a className="py-2.5 text-[14px] text-black" href="#">
@@ -92,12 +93,12 @@ function Navbar() {
             <ul className="flex items-center gap-6">
               {navLinks.map((navLink, index) => (
                 <li key={index}>
-                  <a
+                  <Link
                     className="text-black hover:opacity-80 uppercase text-[14px] font-medium px-1"
-                    href={navLink.id}
+                    to={`${navLink.id}`}
                   >
                     {navLink.title}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -119,13 +120,13 @@ function Navbar() {
                   key={nav.id}
                   className={`cursor-pointer p-1 font-primary leading-6 text-secondary hover:text-primary hover:font-medium mr-0}`}
                 >
-                  <a
-                    href={`#${nav.id}`}
+                  <Link
+                    to={`${nav.id}`}
                     className="w-full block uppercase text-center text-[14px] p-[0.3rem] hover:bg-gray-200 rounded-lg hover:font-semibold"
                     onClick={() => closeMenu()}
                   >
                     {nav.title}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

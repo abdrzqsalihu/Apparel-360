@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function RecentProducts() {
   const [recentProducts, setRecentProducts] = useState([]);
@@ -37,16 +38,19 @@ function RecentProducts() {
               <h1 className="font-medium">Featured Products</h1>
             </div>
             <div>
-              <a href="shop" className="flex items-center gap-x-2">
+              <Link to="/shop" className="flex items-center gap-x-2">
                 <span>See All</span> <ArrowRight size={18} />
-              </a>
+              </Link>
             </div>
           </div>
 
           <div className="flex mt-3">
             <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
               {recentProducts.map((recentProducts) => (
-                <a href={`shop/${recentProducts.id}`} key={recentProducts.id}>
+                <Link
+                  to={`product-details/${recentProducts.id}`}
+                  key={recentProducts.id}
+                >
                   <div className="group relative">
                     <div className="aspect-square w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:h-80">
                       <img
@@ -67,7 +71,7 @@ function RecentProducts() {
                       </p>
                     </div>
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
           </div>

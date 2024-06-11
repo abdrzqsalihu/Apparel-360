@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 function Shop() {
   const [allProducts, setAllProducts] = useState([]);
@@ -38,7 +39,10 @@ function Shop() {
           <div className="flex mt-3">
             <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
               {allProducts.map((allProducts) => (
-                <a href={`shop/${allProducts.id}`} key={allProducts.id}>
+                <Link
+                  to={`/product-details/${allProducts.id}`}
+                  key={allProducts.id}
+                >
                   <div className="group relative">
                     <div className="aspect-square w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:h-80">
                       <img
@@ -59,7 +63,7 @@ function Shop() {
                       </p>
                     </div>
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
