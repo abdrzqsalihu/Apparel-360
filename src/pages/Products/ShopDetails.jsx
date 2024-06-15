@@ -6,6 +6,8 @@ function ShopDetails() {
   const { id } = useParams();
   const [ProductDetail, setProductDetail] = useState(null);
   const [error, setError] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [size, setSize] = useState("");
 
   useEffect(() => {
     fetch(
@@ -30,8 +32,6 @@ function ShopDetails() {
       });
   }, [id]);
 
-  const [quantity, setQuantity] = useState(1);
-
   const handleQuantityChange = (event) => {
     setQuantity(Number(event.target.value));
   };
@@ -44,6 +44,48 @@ function ShopDetails() {
     if (quantity > 1) {
       setQuantity((quantity) => quantity - 1);
     }
+  };
+
+  const handleSizeChange = (event) => {
+    setSize(event.target.value);
+  };
+
+  const addToCart = () => {
+    if (!size) {
+      alert("Please select a size.");
+      return;
+    }
+
+    const payload = {
+      id: ProductDetail.id,
+      productname: ProductDetail.productname,
+      productprice: ProductDetail.productprice,
+      quantity: quantity,
+      size: size,
+    };
+
+    fetch(
+      "http://localhost/phenomenal/react_php_applications/apparel-360/src/server/api/add_to_cart.php",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+        credentials: "include", // This is important to include cookies
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          alert("Product added to cart!");
+        } else {
+          alert("Error adding product to cart: " + data.message);
+        }
+      })
+      .catch((error) => {
+        alert("Error adding product to cart: " + error.message);
+      });
   };
 
   return (
@@ -115,7 +157,8 @@ function ShopDetails() {
                     <select
                       name="size"
                       className="mt-1.5 w-[50%] md:w-44 rounded-md border p-1 border-gray-200 text-gray-700 sm:text-sm"
-                      defaultValue=""
+                      value={size}
+                      onChange={handleSizeChange}
                     >
                       <option value="" disabled>
                         Select a size
@@ -164,7 +207,10 @@ function ShopDetails() {
                   </div>
 
                   <div className="mt-12">
-                    <button className="bg-black hover:opacity-90 text-white p-3 w-full shadow-sm rounded-sm">
+                    <button
+                      onClick={addToCart}
+                      className="bg-black hover:opacity-90 text-white p-3 w-full shadow-sm rounded-sm"
+                    >
                       Add to Cart
                     </button>
                   </div>
@@ -186,7 +232,9 @@ function ShopDetails() {
             </div>
           </>
         ) : (
-          <div>Loading...</div>
+          <div className="flex items-center justify-center font-medium">
+            Loading...
+          </div>
         )}
       </section>
     </div>
