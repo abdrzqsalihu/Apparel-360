@@ -6,9 +6,7 @@ function Shop() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(
-      "http://localhost/phenomenal/react_php_applications/apparel-360/src/server/api/products.php"
-    )
+    fetch(import.meta.env.VITE_REACT_APP_GET_PRODUCT_DATA)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");

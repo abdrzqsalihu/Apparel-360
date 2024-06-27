@@ -7,12 +7,9 @@ function Cart() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(
-      "http://localhost/phenomenal/react_php_applications/apparel-360/src/server/api/get_cart_details.php",
-      {
-        credentials: "include", // Include credentials (cookies) in the request
-      }
-    )
+    fetch(import.meta.env.VITE_REACT_APP_GET_CART_DATA, {
+      credentials: "include", // Include credentials (cookies) in the request
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -55,17 +52,14 @@ function Cart() {
     //   `Updating quantity for id: ${id} to new quantity: ${newQuantity}`
     // );
 
-    fetch(
-      `http://localhost/phenomenal/react_php_applications/apparel-360/src/server/api/update_cart_quantity.php`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ id, quantity: newQuantity }),
-      }
-    )
+    fetch(import.meta.env.VITE_REACT_APP_UPDATE_CART_DATA, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ id, quantity: newQuantity }),
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to update quantity");

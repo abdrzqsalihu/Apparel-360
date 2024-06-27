@@ -11,7 +11,7 @@ function ShopDetails() {
 
   useEffect(() => {
     fetch(
-      `http://localhost/phenomenal/react_php_applications/apparel-360/src/server/api/products.php?id=${id}`
+      import.meta.env.VITE_REACT_APP_SINGLE_PRODUCTS_DATA.replace("${id}", id)
     )
       .then((response) => {
         if (!response.ok) {
@@ -65,17 +65,14 @@ function ShopDetails() {
       size: size,
     };
 
-    fetch(
-      "http://localhost/phenomenal/react_php_applications/apparel-360/src/server/api/add_to_cart.php",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-        credentials: "include", // This is important to include cookies
-      }
-    )
+    fetch(import.meta.env.VITE_REACT_APP_ADD_TO_CART_DATA, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+      credentials: "include", // This is important to include cookies
+    })
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
