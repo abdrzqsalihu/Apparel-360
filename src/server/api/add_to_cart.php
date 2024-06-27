@@ -3,7 +3,7 @@
 // Start the session
 session_start();
 // Allow requests from any origin
-header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Origin: http://localhost:5174");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Credentials: true"); // Allow credentials
@@ -30,10 +30,11 @@ if (!isset($_SESSION['user_id'])) {
 
 $input = json_decode(file_get_contents('php://input'), true);
 
-if (isset($input['id']) && isset($input['productname']) && isset($input['productprice']) && isset($input['quantity']) && isset($input['size'])) {
+if (isset($input['id']) && isset($input['productname']) && isset($input['productprice']) && isset($input['quantity']) && isset($input['size']) && isset($input['productimage']))  {
     $productid = $input['id'];
     $productname = $input['productname'];
     $productprice = $input['productprice'];
+    $productimage = $input['productimage'];
     $quantity = $input['quantity'];
     $size = $input['size'];
 
@@ -42,6 +43,7 @@ if (isset($input['id']) && isset($input['productname']) && isset($input['product
         'id' => $productid,
         'name' => $productname,
         'price' => $productprice,
+        'image' => $productimage,
         'quantity' => $quantity,
         'size' => $size
     );
@@ -53,7 +55,7 @@ if (isset($input['id']) && isset($input['productname']) && isset($input['product
     $date = date("Y-m-d");
     $user_id = $_SESSION['user_id'];
 
-    $sqr = "INSERT INTO cartlist (productid, user_id, productname, productprice, quantity, size, o_date) VALUES ('$productid', '$user_id', '$productname', '$productprice', '$quantity', '$size', '$date')";
+    $sqr = "INSERT INTO cartlist (productid, user_id, productname, productprice, productimage, quantity, size, o_date) VALUES ('$productid', '$user_id', '$productname', '$productprice', '$productimage', '$quantity', '$size', '$date')";
     if (mysqli_query($conn, $sqr)) {
         echo json_encode(['success' => true, 'message' => 'Product added to cart!']);
     } else {

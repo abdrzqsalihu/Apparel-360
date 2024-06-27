@@ -60,6 +60,7 @@ function ShopDetails() {
       id: ProductDetail.id,
       productname: ProductDetail.productname,
       productprice: ProductDetail.productprice,
+      productimage: ProductDetail.product_image,
       quantity: quantity,
       size: size,
     };

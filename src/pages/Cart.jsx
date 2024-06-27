@@ -1,5 +1,5 @@
 import { Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Cart() {
@@ -18,6 +18,40 @@ function Cart() {
       setQuantity((quantity) => quantity - 1);
     }
   };
+
+  const [allCartInfo, setAllCartInfo] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch(
+      "http://localhost/phenomenal/react_php_applications/apparel-360/src/server/api/get_cart_details.php",
+      {
+        credentials: "include", // Include credentials (cookies) in the request
+      }
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setAllCartInfo(data);
+      })
+      .catch((error) => {
+        setError(error);
+      });
+  }, []);
+
+  if (error) {
+    return (
+      <div className="mt-12 font-medium flex justify-center tracking-wide">
+        Error: {error.message}
+      </div>
+    );
+  }
+
+  // console.log("allCartInfo:", allCartInfo);
   return (
     <>
       <section className="mt-10">
@@ -32,67 +66,74 @@ function Cart() {
             <div className="mt-10">
               <ul className="flex flex-col lg:flex-row">
                 <div className="flex flex-1 flex-col items-center justify-center space-y-8">
-                  <li className="w-[100%] flex flex-wrap items-center gap-4">
-                    <div className="flex flex-row items-center justify-between gap-4 flex-grow">
-                      <div className="flex flex-row items-center">
-                        <img
-                          src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=830&q=80"
-                          alt=""
-                          className="hidden md:block w-16 h-16 rounded object-cover"
-                        />
+                  {allCartInfo.map((cartinfo) => (
+                    <li
+                      key={cartinfo.id}
+                      className="w-[100%] flex flex-wrap items-center gap-4"
+                    >
+                      <div className="flex flex-row items-center justify-between gap-4 flex-grow">
+                        <div className="flex flex-row items-center">
+                          <img
+                            src={`/products/${cartinfo.productimage}`}
+                            alt={cartinfo.productimage}
+                            className="hidden md:block w-16 h-16 rounded object-cover mr-4"
+                          />
 
-                        <div className="flex flex-col">
-                          <h3 className="text-sm text-gray-900 font-medium line-clamp-1">
-                            Basic Tee 6-Pack
-                          </h3>
-                          <dl className="mt-0.5 space-y-px text-[11px] text-gray-600">
-                            <div>
-                              <dt className="inline">Size:</dt>
-                              <dd className="inline ml-2">S</dd>
-                            </div>
-                            <div>
-                              <dt className="inline">Price:</dt>
-                              <dd className="inline ml-2">$200</dd>
-                            </div>
-                          </dl>
+                          <div className="flex flex-col w-full lg:w-60">
+                            <h3 className="text-sm text-gray-900 font-medium line-clamp-1">
+                              {cartinfo.productname}
+                            </h3>
+                            <dl className="mt-0.5 space-y-px text-[11px] text-gray-600">
+                              <div>
+                                <dt className="inline">Size:</dt>
+                                <dd className="inline ml-2">{cartinfo.size}</dd>
+                              </div>
+                              <div>
+                                <dt className="inline">Price:</dt>
+                                <dd className="inline ml-2">
+                                  ${cartinfo.productprice}
+                                </dd>
+                              </div>
+                            </dl>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={decrementQuantity}
+                            type="button"
+                            className="size-9 leading-10 text-gray-600 transition hover:opacity-75"
+                          >
+                            -
+                          </button>
+
+                          <input
+                            type="number"
+                            id="Quantity"
+                            min={1}
+                            value={cartinfo.quantity}
+                            onChange={handleQuantityChange}
+                            className="h-8 w-9 rounded border border-gray-200 text-center pl-1"
+                          />
+
+                          <button
+                            onClick={incrementQuantity}
+                            type="button"
+                            className="size-9 leading-10 text-gray-600 transition hover:opacity-75"
+                          >
+                            +
+                          </button>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <button className="text-gray-600 transition hover:text-red-600">
+                            <span className="sr-only">Remove item</span>
+                            <Trash2 size={16} />
+                          </button>
                         </div>
                       </div>
-
-                      <div className="flex items-center gap-1">
-                        <button
-                          onClick={decrementQuantity}
-                          type="button"
-                          className="size-9 leading-10 text-gray-600 transition hover:opacity-75"
-                        >
-                          -
-                        </button>
-
-                        <input
-                          type="number"
-                          id="Quantity"
-                          min={1}
-                          value={quantity}
-                          onChange={handleQuantityChange}
-                          className="h-8 w-9 rounded border border-gray-200 text-center pl-1"
-                        />
-
-                        <button
-                          onClick={incrementQuantity}
-                          type="button"
-                          className="size-9 leading-10 text-gray-600 transition hover:opacity-75"
-                        >
-                          +
-                        </button>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <button className="text-gray-600 transition hover:text-red-600">
-                          <span className="sr-only">Remove item</span>
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </div>
-                  </li>
+                    </li>
+                  ))}
                 </div>
 
                 <div className="flex bg-gray-100 p-5 py-6 ml-0 lg:ml-10 mt-10 lg:mt-0 h-[15rem] w-full lg:w-[30%] rounded-md">
