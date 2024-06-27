@@ -3,22 +3,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Cart() {
-  const [quantity, setQuantity] = useState(1);
-
-  const handleQuantityChange = (event) => {
-    setQuantity(Number(event.target.value));
-  };
-
-  const incrementQuantity = () => {
-    setQuantity((quantity) => quantity + 1);
-  };
-
-  const decrementQuantity = () => {
-    if (quantity > 1) {
-      setQuantity((quantity) => quantity - 1);
-    }
-  };
-
   const [allCartInfo, setAllCartInfo] = useState([]);
   const [error, setError] = useState(null);
 
@@ -43,6 +27,65 @@ function Cart() {
       });
   }, []);
 
+  const handleQuantityChange = (event, id) => {
+    const newQuantity = parseInt(event.target.value, 10);
+    if (!isNaN(newQuantity) && newQuantity > 0) {
+      updateQuantity(id, newQuantity);
+    }
+  };
+
+  const incrementQuantity = (id, currentQuantity) => {
+    // const newQuantity = currentQuantity + 1;
+    const newQuantity = Number(currentQuantity) + 1; // Convert to number explicitly
+    // console.log(newQuantity);
+    // console.log(typeof newQuantity);
+    updateQuantity(id, newQuantity);
+  };
+
+  const decrementQuantity = (id, currentQuantity) => {
+    if (currentQuantity > 1) {
+      const newQuantity = currentQuantity - 1;
+      // console.log(typeof newQuantity);
+      updateQuantity(id, newQuantity);
+    }
+  };
+
+  const updateQuantity = (id, newQuantity) => {
+    // console.log(
+    //   `Updating quantity for id: ${id} to new quantity: ${newQuantity}`
+    // );
+
+    fetch(
+      `http://localhost/phenomenal/react_php_applications/apparel-360/src/server/api/update_cart_quantity.php`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ id, quantity: newQuantity }),
+      }
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to update quantity");
+        }
+        return response.json();
+      })
+      // eslint-disable-next-line no-unused-vars
+      .then((data) => {
+        setAllCartInfo((prevCartInfo) =>
+          prevCartInfo.map((item) =>
+            item.id === id ? { ...item, quantity: newQuantity } : item
+          )
+        );
+        // console.log("Received cart data:", data); // Example usage
+      })
+      .catch((error) => {
+        setError(error);
+      });
+  };
+
   if (error) {
     return (
       <div className="mt-12 font-medium flex justify-center tracking-wide">
@@ -51,7 +94,6 @@ function Cart() {
     );
   }
 
-  // console.log("allCartInfo:", allCartInfo);
   return (
     <>
       <section className="mt-10">
@@ -100,7 +142,9 @@ function Cart() {
 
                         <div className="flex items-center gap-1">
                           <button
-                            onClick={decrementQuantity}
+                            onClick={() =>
+                              decrementQuantity(cartinfo.id, cartinfo.quantity)
+                            }
                             type="button"
                             className="size-9 leading-10 text-gray-600 transition hover:opacity-75"
                           >
@@ -112,12 +156,16 @@ function Cart() {
                             id="Quantity"
                             min={1}
                             value={cartinfo.quantity}
-                            onChange={handleQuantityChange}
+                            onChange={(e) =>
+                              handleQuantityChange(e, cartinfo.id)
+                            }
                             className="h-8 w-9 rounded border border-gray-200 text-center pl-1"
                           />
 
                           <button
-                            onClick={incrementQuantity}
+                            onClick={() =>
+                              incrementQuantity(cartinfo.id, cartinfo.quantity)
+                            }
                             type="button"
                             className="size-9 leading-10 text-gray-600 transition hover:opacity-75"
                           >
