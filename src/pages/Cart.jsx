@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -74,6 +75,32 @@ function Cart() {
           )
         );
         // console.log("Received cart data:", data); // Example usage
+      })
+      .catch((error) => {
+        setError(error);
+      });
+  };
+
+  const handleDeleteItem = (id) => {
+    fetch(`${import.meta.env.VITE_REACT_APP_UPDATE_CART_DATA}?id=${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to delete item from cart");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.success) {
+          alert("Product removed from cart!");
+        } else {
+          alert("Error removing product from cart: " + data.message);
+        }
+        setAllCartInfo((prevCartInfo) =>
+          prevCartInfo.filter((item) => item.id !== id)
+        );
       })
       .catch((error) => {
         setError(error);
@@ -168,7 +195,10 @@ function Cart() {
                         </div>
 
                         <div className="flex items-center gap-2">
-                          <button className="text-gray-600 transition hover:text-red-600">
+                          <button
+                            onClick={() => handleDeleteItem(cartinfo.id)}
+                            className="text-gray-600 transition hover:text-red-600"
+                          >
                             <span className="sr-only">Remove item</span>
                             <Trash2 size={16} />
                           </button>
