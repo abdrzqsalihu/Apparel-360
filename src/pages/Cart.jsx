@@ -48,6 +48,15 @@ function Cart() {
     }
   };
 
+  // Function to calculate total amount
+  const calculateTotal = () => {
+    return allCartInfo
+      .reduce((total, item) => {
+        return total + item.productprice * item.quantity;
+      }, 0)
+      .toFixed(2); // Ensure total is formatted to two decimal places
+  };
+
   const updateQuantity = (id, newQuantity) => {
     // console.log(
     //   `Updating quantity for id: ${id} to new quantity: ${newQuantity}`
@@ -214,7 +223,8 @@ function Cart() {
                       Cart Total
                     </h1>
                     <p className="my-2 text-[15px] mb-6 tracking-tight">
-                      Total: <span className="font-medium">$300</span>
+                      Total:{" "}
+                      <span className="font-medium">${calculateTotal()}</span>
                     </p>
                     <div className="w-full">
                       <Link
