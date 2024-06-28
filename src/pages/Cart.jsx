@@ -184,6 +184,7 @@ function Cart() {
                           <input
                             type="number"
                             id="Quantity"
+                            readOnly
                             min={1}
                             value={cartinfo.quantity}
                             onChange={(e) =>
