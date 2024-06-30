@@ -12,9 +12,8 @@ function ShopDetails() {
   const { setCartItemCount } = useCart(); // Get the setCartItemCount function from context
 
   useEffect(() => {
-    fetch(
-      import.meta.env.VITE_REACT_APP_SINGLE_PRODUCTS_DATA.replace("${id}", id)
-    )
+    // Fetch product details from API endpoint
+    fetch(`${import.meta.env.VITE_REACT_APP_GET_PRODUCT_DATA}?id=${id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
