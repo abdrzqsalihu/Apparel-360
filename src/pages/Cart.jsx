@@ -2,8 +2,10 @@
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useCart } from "../contexts/CartContext";
 
 function Cart() {
+  const { setCartItemCount } = useCart(); // Get the setCartItemCount function from context
   const [allCartInfo, setAllCartInfo] = useState([]);
   const [error, setError] = useState(null);
 
@@ -19,11 +21,12 @@ function Cart() {
       })
       .then((data) => {
         setAllCartInfo(data);
+        setCartItemCount(data.length); // Update cart item count in context
       })
       .catch((error) => {
         setError(error);
       });
-  }, []);
+  }, [setCartItemCount]);
 
   const handleQuantityChange = (event, id) => {
     const newQuantity = parseInt(event.target.value, 10);
@@ -107,9 +110,11 @@ function Cart() {
         } else {
           alert("Error removing product from cart: " + data.message);
         }
-        setAllCartInfo((prevCartInfo) =>
-          prevCartInfo.filter((item) => item.id !== id)
-        );
+        setAllCartInfo((prevCartInfo) => {
+          const updatedCart = prevCartInfo.filter((item) => item.id !== id);
+          setCartItemCount(updatedCart.length); // Update cart item count in context
+          return updatedCart;
+        });
       })
       .catch((error) => {
         setError(error);

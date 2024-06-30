@@ -1,6 +1,7 @@
 import { ChevronRight, Home } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useCart } from "../../contexts/CartContext";
 
 function ShopDetails() {
   const { id } = useParams();
@@ -8,6 +9,7 @@ function ShopDetails() {
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [size, setSize] = useState("");
+  const { setCartItemCount } = useCart(); // Get the setCartItemCount function from context
 
   useEffect(() => {
     fetch(
@@ -77,6 +79,8 @@ function ShopDetails() {
       .then((data) => {
         if (data.success) {
           alert("Product added to cart!");
+          console.log(data);
+          setCartItemCount(data.cartItemCount);
         } else {
           alert("Error adding product to cart: " + data.message);
         }

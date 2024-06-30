@@ -2,8 +2,11 @@ import { Menu, Phone, ShoppingCart, X } from "lucide-react";
 import { navLinks } from "../utils/constants";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useCart } from "../contexts/CartContext";
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const { cartItemCount } = useCart();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -57,7 +60,7 @@ function Navbar() {
                 <span className="relative">
                   <ShoppingCart size={28} />
                   <span className="absolute -top-1 -right-2 bg-red-500 text-white rounded-full px-[0.26rem] text-xs">
-                    0
+                    {cartItemCount}
                   </span>
                 </span>
               </Link>
