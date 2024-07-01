@@ -1,7 +1,49 @@
 import { Mail } from "lucide-react";
+import { useState } from "react";
 
 /* eslint-disable react/no-unescaped-entities */
 function Contact() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [id]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const response = await fetch(import.meta.env.VITE_REACT_APP_CONTACT_US, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const result = await response.json();
+    if (result.success) {
+      alert(
+        "We've recieved your message and we'd get back to you in 24 hours!"
+      );
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+    } else {
+      alert("Error sending message. Please try again.");
+    }
+  };
   return (
     <div>
       <section className="mt-6">
@@ -38,7 +80,7 @@ function Contact() {
                   </div>
 
                   <div className="rounded-lg bg-white p-8 shadow-lg lg:col-span-3 lg:p-12">
-                    <form action="#" className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-4">
                       <div>
                         <label className="sr-only" htmlFor="name">
                           Name
@@ -48,6 +90,8 @@ function Contact() {
                           placeholder="Name"
                           type="text"
                           id="name"
+                          value={formData.name}
+                          onChange={handleChange}
                         />
                       </div>
 
@@ -61,6 +105,8 @@ function Contact() {
                             placeholder="Email address"
                             type="email"
                             id="email"
+                            value={formData.email}
+                            onChange={handleChange}
                           />
                         </div>
 
@@ -73,6 +119,8 @@ function Contact() {
                             placeholder="Phone Number"
                             type="tel"
                             id="phone"
+                            value={formData.phone}
+                            onChange={handleChange}
                           />
                         </div>
                       </div>
@@ -87,6 +135,8 @@ function Contact() {
                           placeholder="Message"
                           rows="8"
                           id="message"
+                          value={formData.message}
+                          onChange={handleChange}
                         ></textarea>
                       </div>
 
