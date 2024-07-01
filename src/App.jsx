@@ -8,6 +8,8 @@ import Checkout from "./pages/Checkout";
 import Blogs from "./pages/Blogs";
 import Contact from "./pages/Contact";
 import Faq from "./pages/Faq";
+import LogIn from "./pages/auth/LogIn";
+import Register from "./pages/auth/Register";
 
 function App() {
   return (
@@ -22,6 +24,9 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/checkout" element={<Checkout />} />
+        {/* AUTH ROUTES  */}
+        <Route path="/login" element={<LogIn />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
       {/* </BrowserRouter> */}
     </>

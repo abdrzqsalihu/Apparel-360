@@ -66,12 +66,12 @@ function Navbar() {
               </Link>
 
               <div className="hidden md:flex gap-8">
-                <a className="py-2.5 text-[14px] text-black" href="#">
+                <Link className="py-2.5 text-[14px] text-black" to="/login">
                   Log In
-                </a>
-                <a className="py-2.5 text-[14px] text-black" href="i#">
+                </Link>
+                <Link className="py-2.5 text-[14px] text-black" to="/register">
                   Register
-                </a>
+                </Link>
               </div>
             </div>
 
