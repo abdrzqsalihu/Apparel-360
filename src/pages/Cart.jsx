@@ -3,6 +3,7 @@ import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
+import Swal from "sweetalert2";
 
 function Cart() {
   const { setCartItemCount } = useCart(); // Get the setCartItemCount function from context
@@ -106,7 +107,14 @@ function Cart() {
       })
       .then((data) => {
         if (data.success) {
-          alert("Product removed from cart!");
+          // alert("Product removed from cart!");
+          Swal.fire({
+            title: "Success!",
+            text: "Product removed from cart!",
+            icon: "info",
+            confirmButtonColor: "#374151",
+            confirmButtonText: "Close",
+          });
         } else {
           alert("Error removing product from cart: " + data.message);
         }

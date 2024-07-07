@@ -2,6 +2,7 @@ import { ChevronRight, Home } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useCart } from "../../contexts/CartContext";
+import Swal from "sweetalert2";
 
 function ShopDetails() {
   const { id } = useParams();
@@ -53,7 +54,14 @@ function ShopDetails() {
 
   const addToCart = () => {
     if (!size) {
-      alert("Please select a size.");
+      // alert("Please select a size.");
+      Swal.fire({
+        title: "Oops...",
+        text: "Please select a size.",
+        icon: "warning",
+        confirmButtonColor: "#374151",
+        confirmButtonText: "Close",
+      });
       return;
     }
 
@@ -77,7 +85,14 @@ function ShopDetails() {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          alert("Product added to cart!");
+          // alert("Product added to cart!");
+          Swal.fire({
+            title: "Success!",
+            text: "Product added to cart!",
+            icon: "success",
+            confirmButtonColor: "#374151",
+            confirmButtonText: "Close",
+          });
           console.log(data);
           setCartItemCount(data.cartItemCount);
         } else {

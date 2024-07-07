@@ -1,5 +1,6 @@
 import { Mail } from "lucide-react";
 import { useState } from "react";
+import Swal from "sweetalert2";
 
 /* eslint-disable react/no-unescaped-entities */
 function Contact() {
@@ -31,9 +32,16 @@ function Contact() {
 
     const result = await response.json();
     if (result.success) {
-      alert(
-        "We've recieved your message and we'd get back to you in 24 hours!"
-      );
+      // alert(
+      //   "We've recieved your message and we'd get back to you in 24 hours!"
+      // );
+      Swal.fire({
+        title: "Success!",
+        text: "We've recieved your message and we'd get back to you in 24 hours!",
+        icon: "success",
+        confirmButtonColor: "#374151",
+        confirmButtonText: "Close",
+      });
       setFormData({
         name: "",
         email: "",
