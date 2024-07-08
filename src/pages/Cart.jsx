@@ -151,84 +151,100 @@ function Cart() {
             <div className="mt-10">
               <ul className="flex flex-col lg:flex-row">
                 <div className="flex flex-1 flex-col items-center justify-center space-y-8">
-                  {allCartInfo.map((cartinfo) => (
-                    <li
-                      key={cartinfo.id}
-                      className="w-[100%] flex flex-wrap items-center gap-4"
-                    >
-                      <div className="flex flex-row items-center justify-between gap-4 flex-grow">
-                        <div className="flex flex-row items-center">
-                          <img
-                            src={`/products/${cartinfo.productimage}`}
-                            alt={cartinfo.productimage}
-                            className="hidden md:block w-16 h-16 rounded object-cover mr-4"
-                          />
+                  {allCartInfo.length === 0 ? (
+                    <p className="text-center text-gray-700 text-2xl font-semibold">
+                      {/* Your cart is empty. */}
+                    </p>
+                  ) : (
+                    <>
+                      {allCartInfo.map((cartinfo) => (
+                        <li
+                          key={cartinfo.id}
+                          className="w-[100%] flex flex-wrap items-center gap-4"
+                        >
+                          <div className="flex flex-row items-center justify-between gap-4 flex-grow">
+                            <div className="flex flex-row items-center">
+                              <img
+                                src={`/products/${cartinfo.productimage}`}
+                                alt={cartinfo.productimage}
+                                className="hidden md:block w-16 h-16 rounded object-cover mr-4"
+                              />
 
-                          <div className="flex flex-col w-full lg:w-60">
-                            <h3 className="text-sm text-gray-900 font-medium line-clamp-1">
-                              {cartinfo.productname}
-                            </h3>
-                            <dl className="mt-0.5 space-y-px text-[11px] text-gray-600">
-                              <div>
-                                <dt className="inline">Size:</dt>
-                                <dd className="inline ml-2">{cartinfo.size}</dd>
+                              <div className="flex flex-col w-full lg:w-60">
+                                <h3 className="text-sm text-gray-900 font-medium line-clamp-1">
+                                  {cartinfo.productname}
+                                </h3>
+                                <dl className="mt-0.5 space-y-px text-[11px] text-gray-600">
+                                  <div>
+                                    <dt className="inline">Size:</dt>
+                                    <dd className="inline ml-2">
+                                      {cartinfo.size}
+                                    </dd>
+                                  </div>
+                                  <div>
+                                    <dt className="inline">Price:</dt>
+                                    <dd className="inline ml-2">
+                                      ${cartinfo.productprice}
+                                    </dd>
+                                  </div>
+                                </dl>
                               </div>
-                              <div>
-                                <dt className="inline">Price:</dt>
-                                <dd className="inline ml-2">
-                                  ${cartinfo.productprice}
-                                </dd>
-                              </div>
-                            </dl>
+                            </div>
+
+                            <div className="flex items-center gap-1">
+                              <button
+                                onClick={() =>
+                                  decrementQuantity(
+                                    cartinfo.id,
+                                    cartinfo.quantity
+                                  )
+                                }
+                                type="button"
+                                className="size-9 leading-10 text-gray-600 transition hover:opacity-75"
+                              >
+                                -
+                              </button>
+
+                              <input
+                                type="number"
+                                id="Quantity"
+                                readOnly
+                                min={1}
+                                value={cartinfo.quantity}
+                                onChange={(e) =>
+                                  handleQuantityChange(e, cartinfo.id)
+                                }
+                                className="h-8 w-9 rounded border border-gray-200 text-center pl-1"
+                              />
+
+                              <button
+                                onClick={() =>
+                                  incrementQuantity(
+                                    cartinfo.id,
+                                    cartinfo.quantity
+                                  )
+                                }
+                                type="button"
+                                className="size-9 leading-10 text-gray-600 transition hover:opacity-75"
+                              >
+                                +
+                              </button>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => handleDeleteItem(cartinfo.id)}
+                                className="text-gray-600 transition hover:text-red-600"
+                              >
+                                <span className="sr-only">Remove item</span>
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
                           </div>
-                        </div>
-
-                        <div className="flex items-center gap-1">
-                          <button
-                            onClick={() =>
-                              decrementQuantity(cartinfo.id, cartinfo.quantity)
-                            }
-                            type="button"
-                            className="size-9 leading-10 text-gray-600 transition hover:opacity-75"
-                          >
-                            -
-                          </button>
-
-                          <input
-                            type="number"
-                            id="Quantity"
-                            readOnly
-                            min={1}
-                            value={cartinfo.quantity}
-                            onChange={(e) =>
-                              handleQuantityChange(e, cartinfo.id)
-                            }
-                            className="h-8 w-9 rounded border border-gray-200 text-center pl-1"
-                          />
-
-                          <button
-                            onClick={() =>
-                              incrementQuantity(cartinfo.id, cartinfo.quantity)
-                            }
-                            type="button"
-                            className="size-9 leading-10 text-gray-600 transition hover:opacity-75"
-                          >
-                            +
-                          </button>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleDeleteItem(cartinfo.id)}
-                            className="text-gray-600 transition hover:text-red-600"
-                          >
-                            <span className="sr-only">Remove item</span>
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
+                        </li>
+                      ))}
+                    </>
+                  )}
                 </div>
 
                 <div className="flex bg-gray-100 p-5 py-6 ml-0 lg:ml-10 mt-10 lg:mt-0 h-[15rem] w-full lg:w-[30%] rounded-md">
@@ -242,11 +258,28 @@ function Cart() {
                     </p>
                     <div className="w-full">
                       <Link
+                        to={
+                          parseFloat(calculateTotal()) === 0 ? "#" : "/checkout"
+                        }
+                        className={`block rounded text-center py-3 text-sm transition ${
+                          parseFloat(calculateTotal()) === 0
+                            ? "bg-gray-400 text-gray-800 cursor-not-allowed"
+                            : "bg-gray-700 text-gray-100 hover:bg-gray-600"
+                        }`}
+                        onClick={(e) =>
+                          parseFloat(calculateTotal()) === 0 &&
+                          e.preventDefault()
+                        }
+                      >
+                        Proceed to Checkout
+                      </Link>
+
+                      {/* <Link
                         to="#"
                         className="block rounded bg-gray-700 text-center py-3 text-sm text-gray-100 transition hover:bg-gray-600"
                       >
                         Proceed to Checkout
-                      </Link>
+                      </Link> */}
                       <p className="text-sm text-center mt-3 tracking-wider font-medium">
                         OR
                       </p>
