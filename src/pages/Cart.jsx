@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Trash2 } from "lucide-react";
+import { ShoppingCart, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
@@ -144,19 +144,36 @@ function Cart() {
           <div className="mx-auto">
             <header className="text-center">
               <h1 className="text-xl font-bold text-gray-900 sm:text-3xl">
-                Your Cart
+                {allCartInfo.length === 0 ? "" : "Your Cart"}
               </h1>
             </header>
 
             <div className="mt-10">
-              <ul className="flex flex-col lg:flex-row">
-                <div className="flex flex-1 flex-col items-center justify-center space-y-8">
-                  {allCartInfo.length === 0 ? (
-                    <p className="text-center text-gray-700 text-2xl font-semibold">
-                      {/* Your cart is empty. */}
-                    </p>
-                  ) : (
-                    <>
+              <ul
+                className={`flex flex-col lg:flex-row ${
+                  allCartInfo.length === 0 ? "justify-center" : ""
+                }`}
+              >
+                {allCartInfo.length === 0 ? (
+                  <>
+                    <div className="flex flex-col items-center text-center justify-center mt-0">
+                      <ShoppingCart size={40} />
+
+                      <p className="text-gray-800 text-2xl md:text-3xl font-semibold my-8">
+                        Your cart is currently empty.
+                      </p>
+
+                      <Link
+                        to="/shop"
+                        className="block rounded bg-gray-800 text-center py-3 px-10 text-sm text-gray-100 transition hover:bg-gray-700 mt-2"
+                      >
+                        Return to Shop
+                      </Link>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex flex-1 flex-col items-center justify-center space-y-8">
                       {allCartInfo.map((cartinfo) => (
                         <li
                           key={cartinfo.id}
@@ -243,55 +260,40 @@ function Cart() {
                           </div>
                         </li>
                       ))}
-                    </>
-                  )}
-                </div>
-
-                <div className="flex bg-gray-100 p-5 py-6 ml-0 lg:ml-10 mt-10 lg:mt-0 h-[15rem] w-full lg:w-[30%] rounded-md">
-                  <div className="flex flex-col w-[100%]">
-                    <h1 className="text-[18px] font-semibold my-1 tracking-wider">
-                      Cart Total
-                    </h1>
-                    <p className="my-2 text-[15px] mb-6 tracking-tight">
-                      Total:{" "}
-                      <span className="font-medium">${calculateTotal()}</span>
-                    </p>
-                    <div className="w-full">
-                      <Link
-                        to={
-                          parseFloat(calculateTotal()) === 0 ? "#" : "/checkout"
-                        }
-                        className={`block rounded text-center py-3 text-sm transition ${
-                          parseFloat(calculateTotal()) === 0
-                            ? "bg-gray-400 text-gray-800 cursor-not-allowed"
-                            : "bg-gray-700 text-gray-100 hover:bg-gray-600"
-                        }`}
-                        onClick={(e) =>
-                          parseFloat(calculateTotal()) === 0 &&
-                          e.preventDefault()
-                        }
-                      >
-                        Proceed to Checkout
-                      </Link>
-
-                      {/* <Link
-                        to="#"
-                        className="block rounded bg-gray-700 text-center py-3 text-sm text-gray-100 transition hover:bg-gray-600"
-                      >
-                        Proceed to Checkout
-                      </Link> */}
-                      <p className="text-sm text-center mt-3 tracking-wider font-medium">
-                        OR
-                      </p>
-                      <Link
-                        to="/shop"
-                        className="block text-center py-3 text-sm text-gray-800 underline transition hover:opacity-70 font-semibold"
-                      >
-                        Continue Shopping
-                      </Link>
                     </div>
-                  </div>
-                </div>
+
+                    <div className="flex bg-gray-100 p-5 py-6 ml-0 lg:ml-10 mt-10 lg:mt-0 h-[15rem] w-full lg:w-[30%] rounded-md">
+                      <div className="flex flex-col w-[100%]">
+                        <h1 className="text-[18px] font-semibold my-1 tracking-wider">
+                          Cart Total
+                        </h1>
+                        <p className="my-2 text-[15px] mb-6 tracking-tight">
+                          Total:{" "}
+                          <span className="font-medium">
+                            ${calculateTotal()}
+                          </span>
+                        </p>
+                        <div className="w-full">
+                          <Link
+                            to="/checkout"
+                            className="block rounded bg-gray-700 text-center py-3 text-sm text-gray-100 transition hover:bg-gray-600"
+                          >
+                            Proceed to Checkout
+                          </Link>
+                          <p className="text-sm text-center mt-3 tracking-wider font-medium">
+                            OR
+                          </p>
+                          <Link
+                            to="/shop"
+                            className="block text-center py-3 text-sm text-gray-800 underline transition hover:opacity-70 font-semibold"
+                          >
+                            Continue Shopping
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
               </ul>
             </div>
           </div>
