@@ -1,8 +1,91 @@
 import { AtSign, Eye, Phone, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 /* eslint-disable react/no-unescaped-entities */
 function Register() {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Check password length
+    if (formData.password.length < 6) {
+      Swal.fire({
+        title: "Error!",
+        text: "Password must be at least 6 characters long",
+        icon: "error",
+        confirmButtonColor: "#374151",
+        confirmButtonText: "Close",
+      });
+      return;
+    }
+
+    const response = await fetch(import.meta.env.VITE_REACT_APP_AUTH, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+      credentials: "include", // This is important to include cookies
+    });
+    const result = await response.json();
+    if (result.success) {
+      // alert("Registration successful");
+      Swal.fire({
+        title: "Success!",
+        text: "Registration successful!",
+        icon: "success",
+        confirmButtonColor: "#374151",
+        confirmButtonText: "Close",
+      }).then(() => {
+        // Redirect to product page after successful registration
+        navigate("/shop");
+      });
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        password: "",
+      });
+    } else {
+      if (result.message === "Email already registered") {
+        // alert("Email already registered. Please use a different email.");
+        Swal.fire({
+          title: "Error!",
+          text: "Email already registered",
+          icon: "error",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+      } else {
+        // alert("Registration failed. Please try again later.");
+        Swal.fire({
+          title: "Error!",
+          text: "Registration failed. Please try again.",
+          icon: "error",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+      }
+    }
+  };
+
   return (
     <div className="px-6">
       <div className="w-full py-20">
@@ -18,7 +101,10 @@ function Register() {
           </p>
         </div>
 
-        <form action="#" className="mx-auto mb-0 mt-10 max-w-md space-y-7">
+        <form
+          onSubmit={handleSubmit}
+          className="mx-auto mb-0 mt-10 max-w-md space-y-7"
+        >
           <div>
             <label htmlFor="name" className="sr-only">
               Full Name
@@ -27,8 +113,12 @@ function Register() {
             <div className="relative">
               <input
                 type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
                 className="w-full rounded-lg border border-gray-200 p-4 pe-12 text-sm shadow-sm"
                 placeholder="Full name"
+                required
               />
 
               <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
@@ -45,8 +135,12 @@ function Register() {
             <div className="relative">
               <input
                 type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 className="w-full rounded-lg border border-gray-200 p-4 pe-12 text-sm shadow-sm"
                 placeholder="Email address"
+                required
               />
 
               <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
@@ -63,6 +157,9 @@ function Register() {
             <div className="relative">
               <input
                 type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
                 className="w-full rounded-lg border border-gray-200 p-4 pe-12 text-sm shadow-sm"
                 placeholder="Phone number"
               />
@@ -81,8 +178,12 @@ function Register() {
             <div className="relative">
               <input
                 type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
                 className="w-full rounded-lg border border-gray-200 p-4 pe-12 text-sm shadow-sm"
                 placeholder="Password"
+                required
               />
 
               <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
