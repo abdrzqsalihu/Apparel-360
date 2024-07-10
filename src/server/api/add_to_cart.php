@@ -29,6 +29,8 @@ if (!isset($_SESSION['user_id'])) {
     $_SESSION['user_id'] = uniqid('user_');
 }
 
+// echo $_SESSION['user_id'];
+
 $input = json_decode(file_get_contents('php://input'), true);
 
 if (isset($input['id'], $input['productname'], $input['productprice'], $input['quantity'], $input['size'], $input['productimage'])) {

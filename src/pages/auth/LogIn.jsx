@@ -1,7 +1,69 @@
 import { AtSign, Eye } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { useAuth } from "../../contexts/AuthContext";
 
 function LogIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(import.meta.env.VITE_REACT_APP_AUTH, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "login",
+          email: email,
+          password: password,
+        }),
+        credentials: "include", // Important for sessions to work
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Login successful, redirect or perform actions
+        Swal.fire({
+          title: "Success!",
+          text: result.message,
+          icon: "success",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+
+        navigate("/shop");
+        login(); // Call login function to update the auth state
+      } else {
+        // Login failed, show error message
+        Swal.fire({
+          title: "Error!",
+          text: result.message,
+          icon: "error",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+      }
+    } catch (error) {
+      // Handle network or other errors
+      console.error("Login error:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "An error occurred during login. Please try again.",
+        icon: "error",
+        confirmButtonColor: "#374151",
+        confirmButtonText: "Close",
+      });
+    }
+  };
+
   return (
     <div className="px-6">
       <div className="w-full py-20">
@@ -12,19 +74,23 @@ function LogIn() {
           </p>
         </div>
 
-        <form action="#" className="mx-auto mb-0 mt-10 max-w-md space-y-7">
+        <form
+          onSubmit={handleSubmit}
+          className="mx-auto mb-0 mt-10 max-w-md space-y-7"
+        >
           <div>
             <label htmlFor="email" className="sr-only">
               Email
             </label>
-
             <div className="relative">
               <input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full rounded-lg border border-gray-200 p-4 pe-12 text-sm shadow-sm"
                 placeholder="Enter email"
+                required
               />
-
               <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
                 <AtSign className="size-4 text-gray-400" />
               </span>
@@ -35,14 +101,15 @@ function LogIn() {
             <label htmlFor="password" className="sr-only">
               Password
             </label>
-
             <div className="relative">
               <input
                 type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full rounded-lg border border-gray-200 p-4 pe-12 text-sm shadow-sm"
                 placeholder="Enter password"
+                required
               />
-
               <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
                 <Eye className="size-4 text-gray-400" />
               </span>

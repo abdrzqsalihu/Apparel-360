@@ -43,7 +43,8 @@ function Register() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData),
+      // body: JSON.stringify(formData),
+      body: JSON.stringify({ ...formData, action: "register" }),
       credentials: "include", // This is important to include cookies
     });
     const result = await response.json();
