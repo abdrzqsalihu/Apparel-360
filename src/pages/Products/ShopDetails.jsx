@@ -97,10 +97,12 @@ function ShopDetails() {
           setCartItemCount(data.cartItemCount);
         } else {
           alert("Error adding product to cart: " + data.message);
+          console.log(data.message);
         }
       })
       .catch((error) => {
         alert("Error adding product to cart: " + error.message);
+        console.log(error.message);
       });
   };
 

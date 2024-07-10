@@ -1,5 +1,6 @@
 <?php
-
+// Set a unique session name for each application
+session_name('apparel360_session');
 // Start the session
 session_start();
 
