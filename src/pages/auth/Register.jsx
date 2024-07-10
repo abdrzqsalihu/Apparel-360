@@ -2,10 +2,12 @@ import { AtSign, Eye, Phone, User } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useAuth } from "../../contexts/AuthContext";
 
 /* eslint-disable react/no-unescaped-entities */
 function Register() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -56,6 +58,7 @@ function Register() {
       }).then(() => {
         // Redirect to product page after successful registration
         navigate("/shop");
+        login(); // Call login function to update the auth state
       });
       setFormData({
         name: "",

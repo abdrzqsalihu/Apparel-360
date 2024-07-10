@@ -3,10 +3,12 @@ import { navLinks } from "../utils/constants";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
+import { useAuth } from "../contexts/AuthContext";
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { cartItemCount } = useCart();
+  const { isLoggedIn, logout } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -66,12 +68,32 @@ function Navbar() {
               </Link>
 
               <div className="hidden md:flex gap-8">
-                <Link className="py-2.5 text-[14px] text-black" to="/login">
+                {isLoggedIn ? (
+                  <button
+                    className="py-2.5 text-[14px] text-black"
+                    onClick={logout}
+                  >
+                    Logout
+                  </button>
+                ) : (
+                  <>
+                    <Link className="py-2.5 text-[14px] text-black" to="/login">
+                      Log In
+                    </Link>
+                    <Link
+                      className="py-2.5 text-[14px] text-black"
+                      to="/register"
+                    >
+                      Register
+                    </Link>
+                  </>
+                )}
+                {/* <Link className="py-2.5 text-[14px] text-black" to="/login">
                   Log In
                 </Link>
                 <Link className="py-2.5 text-[14px] text-black" to="/register">
                   Register
-                </Link>
+                </Link> */}
               </div>
             </div>
 
