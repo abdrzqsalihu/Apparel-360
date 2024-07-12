@@ -1,4 +1,4 @@
-import { Menu, Phone, ShoppingCart, X } from "lucide-react";
+import { Menu, Phone, ShoppingCart, User, X } from "lucide-react";
 import { navLinks } from "../utils/constants";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -67,14 +67,19 @@ function Navbar() {
                 </span>
               </Link>
 
-              <div className="hidden md:flex gap-8">
+              <div className="hidden md:flex gap-10">
                 {isLoggedIn ? (
-                  <button
-                    className="py-2.5 text-[14px] text-black"
-                    onClick={logout}
-                  >
-                    Logout
-                  </button>
+                  <>
+                    <Link to={`/`} className="py-2.5 text-[14px] text-black">
+                      <User size={28} />
+                    </Link>
+                    <button
+                      className="py-2.5 text-[14px] text-black"
+                      onClick={logout}
+                    >
+                      Logout
+                    </button>
+                  </>
                 ) : (
                   <>
                     <Link className="py-2.5 text-[14px] text-black" to="/login">
