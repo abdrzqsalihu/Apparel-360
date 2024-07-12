@@ -19,9 +19,10 @@ include('../config/config.php');
 
 if ($conn) {
    $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : '';
+   $email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
 
     // Fetch all cart items
-    $sql = "SELECT * FROM cartlist WHERE user_id = '$user_id'";
+    $sql = "SELECT * FROM cartlist WHERE user_id = '$user_id' OR email = '$email'";
     // $sql = "SELECT * FROM cartlist";
     $result = mysqli_query($conn, $sql);
 
