@@ -1,12 +1,15 @@
 /* eslint-disable no-unused-vars */
 import { ShoppingCart, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
 import Swal from "sweetalert2";
+import { useAuth } from "../contexts/AuthContext";
 
 function Cart() {
   const { setCartItemCount } = useCart(); // Get the setCartItemCount function from context
+  const { isLoggedIn } = useAuth();
+  const navigate = useNavigate();
   const [allCartInfo, setAllCartInfo] = useState([]);
   const [error, setError] = useState(null);
 
@@ -127,6 +130,24 @@ function Cart() {
       .catch((error) => {
         setError(error);
       });
+  };
+
+  const handleProceedToCheckout = () => {
+    if (isLoggedIn) {
+      navigate("/checkout");
+    } else {
+      Swal.fire({
+        title: "Alert!",
+        text: "You need to login to proceed to checkout.",
+        icon: "warning",
+        confirmButtonColor: "#374151",
+        confirmButtonText: "Okay",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
+      });
+    }
   };
 
   if (error) {
@@ -274,12 +295,12 @@ function Cart() {
                           </span>
                         </p>
                         <div className="w-full">
-                          <Link
-                            to="/checkout"
-                            className="block rounded bg-gray-700 text-center py-3 text-sm text-gray-100 transition hover:bg-gray-600"
+                          <button
+                            onClick={handleProceedToCheckout}
+                            className="block rounded bg-gray-700 text-center py-3 text-sm text-gray-100 transition hover:bg-gray-600 w-full"
                           >
                             Proceed to Checkout
-                          </Link>
+                          </button>
                           <p className="text-sm text-center mt-3 tracking-wider font-medium">
                             OR
                           </p>
