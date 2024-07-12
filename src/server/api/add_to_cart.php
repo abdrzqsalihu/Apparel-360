@@ -26,7 +26,7 @@ if (!isset($_SESSION['cart'])) {
 
 // Generate a unique ID for the user if it doesn't exist
 if (!isset($_SESSION['user_id'])) {
-    $_SESSION['user_id'] = uniqid('user_');
+    $_SESSION['user_id'] = uniqid('user_', true);
 }
 
 // echo $_SESSION['user_id'];
@@ -34,12 +34,12 @@ if (!isset($_SESSION['user_id'])) {
 $input = json_decode(file_get_contents('php://input'), true);
 
 if (isset($input['id'], $input['productname'], $input['productprice'], $input['quantity'], $input['size'], $input['productimage'])) {
-    $productid = $input['id'];
-    $productname = $input['productname'];
-    $productprice = $input['productprice'];
-    $productimage = $input['productimage'];
-    $quantity = $input['quantity'];
-    $size = $input['size'];
+    $productid = htmlspecialchars($input['id'], ENT_QUOTES, 'UTF-8');
+    $productname = htmlspecialchars($input['productname'], ENT_QUOTES, 'UTF-8');
+    $productprice = htmlspecialchars($input['productprice'], ENT_QUOTES, 'UTF-8');
+    $productimage = htmlspecialchars($input['productimage'], ENT_QUOTES, 'UTF-8');
+    $quantity = htmlspecialchars($input['quantity'], ENT_QUOTES, 'UTF-8');
+    $size = htmlspecialchars($input['size'], ENT_QUOTES, 'UTF-8');
 
     // Create an array representing the product
     $product = array(

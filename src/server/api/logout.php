@@ -17,6 +17,8 @@ if (isset($_SESSION['email'])) {
     // Unset the email session variable
     unset($_SESSION['email']);
 
+    session_destroy();
+
     // Update response
     $response = array("success" => true, "message" => "Email session variable unset.");
 } else {

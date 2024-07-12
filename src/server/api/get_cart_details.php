@@ -22,7 +22,8 @@ if ($conn) {
    $email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
 
     // Fetch all cart items
-    $sql = "SELECT * FROM cartlist WHERE user_id = '$user_id' OR email = '$email'";
+    // $sql = "SELECT * FROM cartlist WHERE email = '$email' OR user_id = '$user_id'";
+    $sql = "SELECT * FROM cartlist WHERE (email = '$email' AND email != '') OR (user_id = '$user_id' AND user_id != '')";
     // $sql = "SELECT * FROM cartlist";
     $result = mysqli_query($conn, $sql);
 

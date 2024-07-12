@@ -25,6 +25,8 @@ $data = json_decode(file_get_contents("php://input"));
 // Check if the action is for registration or login
 $action = isset($data->action) ? $data->action : '';
 
+// echo $user_id = $_SESSION['user_id'];
+
 // Registration logic
 if ($action === 'register') {
     $name = htmlspecialchars($data->name, ENT_QUOTES, 'UTF-8');
@@ -62,27 +64,21 @@ if ($action === 'register') {
     if ($stmt->execute()) {
         // Store the email in the session
         $_SESSION['email'] = $email;
+        // $user_id = $stmt->insert_id;  // Get the newly created user ID
+        $user_id = $_SESSION['user_id'];
 
-        // Update cartlist table with registered email if user_id session is set
-        if (isset($_SESSION['user_id'])) {
-            $user_id = $_SESSION['user_id'];
-            
-            // Prepare and execute the UPDATE query for cartlist table
-            $stmt_update = $conn->prepare("UPDATE cartlist SET email = ? WHERE user_id = ?");
-            $stmt_update->bind_param("si", $email, $user_id);
+        // First, update cartlist table with the registered email for the specific session user_id
+        $stmt_update = $conn->prepare("UPDATE cartlist SET email = ? WHERE user_id = ?");
+        $stmt_update->bind_param("ss", $email, $user_id);
 
-            if ($stmt_update->execute()) {
-                echo json_encode(["success" => true, "message" => "Registration successful"]);
-            } else {
-                // Handle database update error
-                echo json_encode(["success" => false, "message" => "Failed to update cart: " . $stmt_update->error]);
-            }
-
-            $stmt_update->close();
+        if ($stmt_update->execute()) {
+            echo json_encode(["success" => true, "message" => "Registration successful"]);
         } else {
-            echo json_encode(["success" => false, "message" => "Session user_id not set"]);
+            // Handle database update error
+            echo json_encode(["success" => false, "message" => "Failed to update cart: " . $stmt_update->error]);
         }
 
+        $stmt_update->close();
     } else {
         // Handle user registration error
         echo json_encode(["success" => false, "message" => "Registration failed: " . $stmt->error]);
@@ -117,28 +113,20 @@ elseif ($action === 'login') {
         if (password_verify($password, $hashed_password)) {
             // Password is correct, set session variables
             $_SESSION['email'] = $email;
-            // $_SESSION['user_id'] = $user_id;
+            $user_id = $_SESSION['user_id'];
 
-            // Update cartlist table with registered email if user_id session is set
-            if (isset($_SESSION['user_id'])) {
-                $user_id = $_SESSION['user_id'];
-                
-                // Prepare and execute the UPDATE query for cartlist table
-                $stmt_update = $conn->prepare("UPDATE cartlist SET email = ? WHERE user_id = ?");
-                $stmt_update->bind_param("si", $email, $user_id);
+            // Update cartlist table to set email for the specific session user_id
+            $stmt_update = $conn->prepare("UPDATE cartlist SET email = ? WHERE user_id = ?");
+            $stmt_update->bind_param("ss", $email, $user_id);
 
-                if ($stmt_update->execute()) {
-                    echo json_encode(["success" => true, "message" => "Login successful", "user_id" => $user_id]);
-                } else {
-                    // Handle database update error
-                    echo json_encode(["success" => false, "message" => "Failed to update cart: " . $stmt_update->error]);
-                }
-
-                $stmt_update->close();
+            if ($stmt_update->execute()) {
+                echo json_encode(["success" => true, "message" => "Login successful", "user_id" => $user_id]);
             } else {
-                echo json_encode(["success" => false, "message" => "Session user_id not set"]);
+                // Handle database update error
+                echo json_encode(["success" => false, "message" => "Failed to update cart: " . $stmt_update->error]);
             }
 
+            $stmt_update->close();
         } else {
             // Password is incorrect
             echo json_encode(["success" => false, "message" => "Incorrect password"]);

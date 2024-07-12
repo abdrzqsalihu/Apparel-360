@@ -26,9 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $quantity = $input['quantity'];
 
         $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : '';
+        // $email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
 
         // Update the quantity in the database
-        $sql = "UPDATE cartlist SET quantity = '$quantity' WHERE id = '$id' AND user_id = '$user_id'";
+        $sql = "UPDATE cartlist SET quantity = '$quantity' WHERE id = '$id'";
         if (mysqli_query($conn, $sql)) {
             header('Content-Type: application/json');
             echo json_encode(['success' => true, 'message' => 'Quantity updated']);
@@ -47,9 +48,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
     $id = $_GET['id']; // Assuming the id is sent as a query parameter
 
     $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : '';
+    // $email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
 
     // Delete item from the cart
-    $sql = "DELETE FROM cartlist WHERE id = '$id' AND user_id = '$user_id'";
+    $sql = "DELETE FROM cartlist WHERE id = '$id'";
+
     if (mysqli_query($conn, $sql)) {
         header('Content-Type: application/json');
         echo json_encode(['success' => true, 'message' => 'Item deleted from cart']);
