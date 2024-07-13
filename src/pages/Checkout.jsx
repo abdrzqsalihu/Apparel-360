@@ -1,6 +1,48 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 function Checkout() {
+  const location = useLocation();
+  const { totalPrice } = location.state || { totalPrice: 0 };
+
+  const [allDeliveryLocation, setAllDeliveryLocation] = useState([]);
+  const [error, setError] = useState(null);
+  const [deliveryPrice, setDeliveryPrice] = useState(0);
+  // eslint-disable-next-line no-unused-vars
+  const [selectedLocation, setSelectedLocation] = useState(null);
+
+  useEffect(() => {
+    fetch(import.meta.env.VITE_REACT_APP_GET_DELIVERY_LOCATION_DATA)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setAllDeliveryLocation(data);
+      })
+      .catch((error) => {
+        setError(error);
+      });
+  }, []);
+
+  const handleLocationChange = (event) => {
+    const selectedLocation = allDeliveryLocation.find(
+      (location) => location.name === event.target.value
+    );
+    setSelectedLocation(selectedLocation);
+    // setDeliveryPrice(selectedLocation ? selectedLocation.price : 0);
+    setDeliveryPrice(selectedLocation ? parseFloat(selectedLocation.price) : 0);
+  };
+
+  const parsedTotalPrice = parseFloat(totalPrice);
+  const total = parsedTotalPrice + deliveryPrice;
+
+  if (error) {
+    return <div className="text-center">Error: {error.message}</div>;
+  }
+
   return (
     <div>
       <section className="mt-6">
@@ -57,13 +99,18 @@ function Checkout() {
                     <select
                       name="location"
                       id="location"
+                      defaultValue=""
+                      onChange={handleLocationChange}
                       className="mt-1.5 w-full rounded-md border p-3 border-gray-200 text-gray-500 sm:text-sm"
                     >
                       <option value="" disabled>
                         Select delivery location
                       </option>
-                      <option value="Abuja">Abuja : ₦2000</option>
-                      <option value="Lagos">Lagos : ₦5000</option>
+                      {allDeliveryLocation.map((location) => (
+                        <option value={location.name} key={location.id}>
+                          {location.name} : ₦{location.price}
+                        </option>
+                      ))}
                     </select>
                   </div>
 
@@ -114,14 +161,15 @@ function Checkout() {
                     Order Total
                   </h1>
                   <p className="my-2 text-[15px] mb-3 tracking-tight flex justify-between">
-                    Subtotal: <span className="font-medium">$0</span>
+                    Subtotal: <span className="font-medium">₦{totalPrice}</span>
                   </p>
                   <p className="my-2 text-[15px] mb-3 tracking-tight flex justify-between">
-                    Delivery: <span className="font-medium">$0</span>
+                    Delivery:{" "}
+                    <span className="font-medium">₦{deliveryPrice}.00</span>
                   </p>
                   <hr className="my-2" />
                   <p className="my-2 text-[16px] mb-3 font-medium tracking-tight flex justify-between">
-                    Total: <span className="font-medium">$0</span>
+                    Total: <span className="font-medium">₦{total}.00</span>
                   </p>
 
                   <div className="mt-4 w-full">

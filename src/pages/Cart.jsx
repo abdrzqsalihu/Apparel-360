@@ -134,7 +134,9 @@ function Cart() {
 
   const handleProceedToCheckout = () => {
     if (isLoggedIn) {
-      navigate("/checkout");
+      // navigate("/checkout");
+      const totalPrice = calculateTotal();
+      navigate("/checkout", { state: { totalPrice } });
     } else {
       Swal.fire({
         title: "Alert!",
@@ -222,7 +224,7 @@ function Cart() {
                                   <div>
                                     <dt className="inline">Price:</dt>
                                     <dd className="inline ml-2">
-                                      ${cartinfo.productprice}
+                                      ₦{cartinfo.productprice}
                                     </dd>
                                   </div>
                                 </dl>
@@ -291,7 +293,7 @@ function Cart() {
                         <p className="my-2 text-[15px] mb-6 tracking-tight">
                           Total:{" "}
                           <span className="font-medium">
-                            ${calculateTotal()}
+                            ₦{calculateTotal()}
                           </span>
                         </p>
                         <div className="w-full">
