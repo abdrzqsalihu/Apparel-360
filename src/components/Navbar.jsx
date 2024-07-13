@@ -70,7 +70,10 @@ function Navbar() {
               <div className="hidden md:flex gap-10">
                 {isLoggedIn ? (
                   <>
-                    <Link to={`/`} className="py-2.5 text-[14px] text-black">
+                    <Link
+                      to={`/dashboard`}
+                      className="py-2.5 text-[14px] text-black"
+                    >
                       <User size={28} />
                     </Link>
                     <button
@@ -131,6 +134,16 @@ function Navbar() {
                   </Link>
                 </li>
               ))}
+              {isLoggedIn && (
+                <li>
+                  <Link
+                    className="text-black hover:opacity-80 uppercase text-[14px] font-medium px-1"
+                    to={`/dashboard`}
+                  >
+                    Dashboard
+                  </Link>
+                </li>
+              )}
             </ul>
           </nav>
         </div>
@@ -159,6 +172,19 @@ function Navbar() {
                   </Link>
                 </li>
               ))}
+              {isLoggedIn && (
+                <li
+                  className={`cursor-pointer p-1 font-primary leading-6 text-secondary hover:text-primary hover:font-medium mr-0}`}
+                >
+                  <Link
+                    to={`/dashboard`}
+                    className="w-full block uppercase text-center text-[14px] p-[0.3rem] hover:bg-gray-200 rounded-lg hover:font-semibold"
+                    onClick={() => closeMenu()}
+                  >
+                    Dashboard
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
         )}
