@@ -10,6 +10,7 @@ import Contact from "./pages/Contact";
 import Faq from "./pages/Faq";
 import LogIn from "./pages/auth/LogIn";
 import Register from "./pages/auth/Register";
+import Success from "./pages/Success";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/success" element={<Success />} />
         {/* AUTH ROUTES  */}
         <Route path="/login" element={<LogIn />} />
         <Route path="/register" element={<Register />} />

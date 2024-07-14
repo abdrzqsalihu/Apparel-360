@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 function Checkout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { totalPrice } = location.state || { totalPrice: 0 };
 
   const [allDeliveryLocation, setAllDeliveryLocation] = useState([]);
@@ -88,8 +89,20 @@ function Checkout() {
             icon: "success",
             confirmButtonColor: "#374151",
             confirmButtonText: "Close",
+          }).then(() => {
+            // Redirect to product page after successful
+            navigate("/shop");
           });
-          // Redirect or update UI as needed
+
+          setFormData({
+            name: "",
+            email: "",
+            phone: "",
+            address: "",
+            city: "",
+            apartment: "",
+            message: "",
+          });
         } else {
           // alert("Error placing order: " + data.message);
 
