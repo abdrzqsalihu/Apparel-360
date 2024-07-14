@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function Checkout() {
   const location = useLocation();
@@ -10,6 +11,16 @@ function Checkout() {
   const [deliveryPrice, setDeliveryPrice] = useState(0);
   // eslint-disable-next-line no-unused-vars
   const [selectedLocation, setSelectedLocation] = useState(null);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    apartment: "",
+    message: "",
+  });
 
   useEffect(() => {
     fetch(import.meta.env.VITE_REACT_APP_GET_DELIVERY_LOCATION_DATA)
@@ -39,6 +50,63 @@ function Checkout() {
   const parsedTotalPrice = parseFloat(totalPrice);
   const total = parsedTotalPrice + deliveryPrice;
 
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const parsedTotalPrice = parseFloat(totalPrice);
+    const total = parsedTotalPrice + deliveryPrice;
+
+    const orderData = {
+      ...formData,
+      deliveryPrice,
+      totalPrice: total,
+      deliveryLocation: selectedLocation?.name || "",
+    };
+
+    fetch(import.meta.env.VITE_REACT_APP_SAVE_DELIVERY_ORDER_DATA, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(orderData),
+      credentials: "include", // To include cookies in the request
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          // alert("Order placed successfully!");
+          Swal.fire({
+            title: "Success!",
+            text: "Order placed successfully!",
+            icon: "success",
+            confirmButtonColor: "#374151",
+            confirmButtonText: "Close",
+          });
+          // Redirect or update UI as needed
+        } else {
+          // alert("Error placing order: " + data.message);
+
+          Swal.fire({
+            title: "Error!",
+            text: data.message,
+            icon: "error",
+            confirmButtonColor: "#374151",
+            confirmButtonText: "Close",
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   if (error) {
     return <div className="text-center">Error: {error.message}</div>;
   }
@@ -54,9 +122,9 @@ function Checkout() {
           </div>
 
           <div className="mt-10">
-            <div className="flex flex-col lg:flex-row">
+            <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row">
               <div className="flex flex-1 flex-col justify-center">
-                <form action="#" className="space-y-4">
+                <section className="space-y-4">
                   <div>
                     <label className="sr-only" htmlFor="name">
                       Full Name
@@ -66,6 +134,10 @@ function Checkout() {
                       placeholder="Full Name"
                       type="text"
                       id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
                     />
                   </div>
 
@@ -79,6 +151,10 @@ function Checkout() {
                         placeholder="Email address"
                         type="email"
                         id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
                       />
                     </div>
 
@@ -91,13 +167,17 @@ function Checkout() {
                         placeholder="Phone Number"
                         type="tel"
                         id="phone"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        required
                       />
                     </div>
                   </div>
 
                   <div>
                     <select
-                      name="location"
+                      name="deliveryLocation"
                       id="location"
                       defaultValue=""
                       onChange={handleLocationChange}
@@ -124,6 +204,10 @@ function Checkout() {
                         placeholder="Town / City"
                         type="text"
                         id="town"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        required
                       />
                     </div>
 
@@ -136,13 +220,16 @@ function Checkout() {
                         placeholder="Apartment, suite, unit etc: (optional)"
                         type="text"
                         id="appartment"
+                        name="apartment"
+                        value={formData.apartment}
+                        onChange={handleChange}
                       />
                     </div>
                   </div>
 
                   <div>
                     <label className="sr-only" htmlFor="message">
-                      Message
+                      Address
                     </label>
 
                     <textarea
@@ -150,9 +237,13 @@ function Checkout() {
                       placeholder="Address"
                       rows="8"
                       id="address"
+                      name="address"
+                      value={formData.address}
+                      onChange={handleChange}
+                      required
                     ></textarea>
                   </div>
-                </form>
+                </section>
               </div>
 
               <div className="flex bg-gray-100 p-5 py-6 ml-0 lg:ml-10 mt-10 lg:mt-0 h-[19rem] w-full lg:w-[30%] rounded-md">
@@ -173,16 +264,16 @@ function Checkout() {
                   </p>
 
                   <div className="mt-4 w-full">
-                    <Link
-                      to="#"
-                      className="block rounded bg-gray-700 text-center py-3 text-sm text-gray-100 transition hover:bg-gray-600"
+                    <button
+                      type="submit"
+                      className="block rounded bg-gray-700 text-center py-3 text-sm text-gray-100 transition hover:bg-gray-600 w-full"
                     >
                       Place Order
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </section>
