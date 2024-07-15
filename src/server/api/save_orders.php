@@ -66,8 +66,8 @@ if (mysqli_query($conn, $sqr)) {
                 $size = mysqli_real_escape_string($conn, $cartData['size']);
 
                 // Insert product into view_orders with the last inserted orderid
-                $insertOrderQuery = "INSERT INTO view_orders (productid, email, productname, productprice, quantity, orderid) 
-                                     VALUES ('$productid', '$email', '$productname', '$productprice', '$quantity', '$lastInsertedOrderId')";
+                $insertOrderQuery = "INSERT INTO view_orders (productid, email, productname, productprice, quantity, size, orderid) 
+                                     VALUES ('$productid', '$email', '$productname', '$productprice', '$quantity', '$size', '$lastInsertedOrderId')";
                 if (!mysqli_query($conn, $insertOrderQuery)) {
                     echo json_encode(['success' => false, 'message' => 'Error inserting product into order: ' . mysqli_error($conn)]);
                     exit();

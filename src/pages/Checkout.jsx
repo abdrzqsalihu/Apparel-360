@@ -91,7 +91,7 @@ function Checkout() {
             confirmButtonText: "Close",
           }).then(() => {
             // Redirect to product page after successful
-            navigate("/shop");
+            navigate("/success");
           });
 
           setFormData({
