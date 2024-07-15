@@ -8,12 +8,15 @@ import {
   UserCircle,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
   const [userDetail, setUserDetail] = useState(null);
+  const [orderDetails, setOrderDetails] = useState([]);
   const [error, setError] = useState(null);
 
+  //   GET USER INFO DATA
   useEffect(() => {
     // Fetch user details from API endpoint
     fetch(import.meta.env.VITE_REACT_APP_GET_USER_DATA, {
@@ -39,11 +42,44 @@ function Dashboard() {
       });
   }, []);
 
+  // GET USER ORDER INFO
+  useEffect(() => {
+    // Fetch user details from API endpoint
+    fetch(import.meta.env.VITE_REACT_APP_GET_USER_ORDER_DATA, {
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setOrderDetails(data);
+        } else {
+          setOrderDetails([]); // Set to an empty array if no data is returned
+        }
+        // console.log("Fetched user data:", data);
+      })
+      .catch((error) => {
+        console.error("Error fetching user order data:", error);
+        setError(error.message);
+      });
+  }, []);
+
   const handleTabChange = (event) => {
     setActiveTab(event.target.value);
   };
 
   const renderTabContent = () => {
+    const today = new Date().toISOString().split("T")[0];
+
+    // Filter orders for today's date
+    const todaysOrders = orderDetails.filter(
+      (orderDetails) => orderDetails.order_date === today
+    );
+
     switch (activeTab) {
       case "Overview":
         return (
@@ -67,7 +103,7 @@ function Dashboard() {
                       Hi, {userDetail.name.split(" ")[0]}!
                     </h2>
                     <p className="text-[0.9rem] md:text-[1rem] text-gray-700 tracking-tight">
-                      Total Orders: 20
+                      Total Orders: {orderDetails.length}
                     </p>
                   </div>
                 </div>
@@ -85,7 +121,7 @@ function Dashboard() {
               </h1>
 
               <div className="overflow-y-auto mt-6">
-                <table className="w-full divide-y-2 divide-gray-200 bg-white text-sm">
+                <table className="w-full divide-y-2 divide-gray-200 bg-white text-sm text-left">
                   <thead>
                     <tr>
                       <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
@@ -113,43 +149,63 @@ function Dashboard() {
                     </tr>
                   </thead>
 
-                  <tbody className="divide-y divide-gray-200 text-center">
-                    <tr>
-                      <td className="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
-                        1.
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-3 text-gray-700">
-                        Nike Windrunne
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-3 text-gray-700">
-                        $70
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-3 text-gray-700">
-                        4
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-3 text-gray-700">
-                        S
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-3 text-gray-700">
-                        <span className="inline-flex items-center justify-center rounded-full bg-yellow-500 px-2.5 py-1 text-white">
-                          <p className="whitespace-nowrap text-sm">Pending</p>
-                        </span>
-                        {/* <span className="inline-flex items-center justify-center rounded-full bg-green-500 px-2.5 py-1 text-white">
-                        <p className="whitespace-nowrap text-sm">Success</p>
-                      </span> */}
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                        24/05/2024
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-2">
-                        <a
-                          href="#"
-                          className="inline-block rounded bg-gray-900 px-4 py-2 text-xs font-medium text-white hover:bg-gray-800"
+                  <tbody className="divide-y divide-gray-200 text-left">
+                    {todaysOrders.length > 0 ? (
+                      todaysOrders.map((order, index) => (
+                        <tr key={order.id}>
+                          <td className="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
+                            {index + 1}.
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-3 text-gray-700">
+                            {order.productname}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-3 text-gray-700">
+                            {order.productprice}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-3 text-gray-700">
+                            {order.quantity}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-3 text-gray-700">
+                            {order.size}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-3 text-gray-700">
+                            {order.status === "0" ? (
+                              <span className="inline-flex items-center justify-center rounded-full bg-yellow-500 px-2.5 py-1 text-white">
+                                <p className="whitespace-nowrap text-sm">
+                                  Pending
+                                </p>
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center justify-center rounded-full bg-green-500 px-2.5 py-1 text-white">
+                                <p className="whitespace-nowrap text-sm">
+                                  Success
+                                </p>
+                              </span>
+                            )}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                            {order.deliveryTime}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-2">
+                            <a
+                              href="#"
+                              className="inline-block rounded bg-gray-900 px-4 py-2 text-xs font-medium text-white hover:bg-gray-800"
+                            >
+                              View details
+                            </a>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan="8"
+                          className="whitespace-nowrap px-4 py-8 text-gray-700 text-center"
                         >
-                          View details
-                        </a>
-                      </td>
-                    </tr>
+                          No orders for today.
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -168,7 +224,7 @@ function Dashboard() {
               </div>
             )}
             <div className="overflow-y-auto mt-10">
-              <table className="w-full divide-y-2 divide-gray-200 bg-white text-sm">
+              <table className="w-full divide-y-2 divide-gray-200 bg-white text-sm text-left">
                 <thead>
                   <tr>
                     <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
@@ -195,45 +251,61 @@ function Dashboard() {
                     <th className="px-4 py-2"></th>
                   </tr>
                 </thead>
-
-                <tbody className="divide-y divide-gray-200 text-center">
-                  <tr>
-                    <td className="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
-                      1.
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-gray-700">
-                      Nike Windrunne
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-gray-700">
-                      $70
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-gray-700">
-                      4
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-gray-700">
-                      S
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-gray-700">
-                      <span className="inline-flex items-center justify-center rounded-full bg-yellow-500 px-2.5 py-1 text-white">
-                        <p className="whitespace-nowrap text-sm">Pending</p>
-                      </span>
-                      {/* <span className="inline-flex items-center justify-center rounded-full bg-green-500 px-2.5 py-1 text-white">
-                        <p className="whitespace-nowrap text-sm">Success</p>
-                      </span> */}
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-gray-700">
-                      24/05/2024
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-3">
-                      <a
-                        href="#"
-                        className="inline-block rounded bg-gray-900 px-4 py-2 text-xs font-medium text-white hover:bg-gray-800"
-                      >
-                        View details
-                      </a>
-                    </td>
-                  </tr>
-                </tbody>
+                {orderDetails ? (
+                  <>
+                    <tbody className="divide-y divide-gray-200 te">
+                      {orderDetails.map((orderDetails) => (
+                        <tr key={orderDetails.id}>
+                          <td className="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
+                            {orderDetails.id}.
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-3 text-gray-700">
+                            {orderDetails.productname}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-3 text-gray-700">
+                            ${orderDetails.productprice}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-3 text-gray-700">
+                            {orderDetails.quantity}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-3 text-gray-700">
+                            {orderDetails.size}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-3 text-gray-700">
+                            {orderDetails.status === "0" ? (
+                              <span className="inline-flex items-center justify-center rounded-full bg-yellow-500 px-2.5 py-1 text-white">
+                                <p className="whitespace-nowrap text-sm">
+                                  Pending
+                                </p>
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center justify-center rounded-full bg-green-500 px-2.5 py-1 text-white">
+                                <p className="whitespace-nowrap text-sm">
+                                  Success
+                                </p>
+                              </span>
+                            )}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-3 text-gray-700">
+                            {orderDetails.delivery_date}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-3">
+                            <Link
+                              to={orderDetails.orderid}
+                              className="inline-block rounded bg-gray-900 px-4 py-2 text-xs font-medium text-white hover:bg-gray-800"
+                            >
+                              View details
+                            </Link>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-center font-medium py-14">
+                    Loading...
+                  </div>
+                )}
               </table>
             </div>
           </div>

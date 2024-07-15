@@ -41,13 +41,13 @@ $deliveryLocation = htmlspecialchars($input['deliveryLocation'], ENT_QUOTES, 'UT
 // $deliveryPrice = floatval($input['deliveryPrice']);
 // $totalPrice = floatval($input['totalPrice']);
 $date = date("Y-m-d");
-$status = 1;
+// $status = 1;
 
 $user_email = mysqli_real_escape_string($conn, $user_email); // Sanitize the user_id input
 
 // Insert order into customer_orders
-$sqr = "INSERT INTO customer_orders (name, email, mobile, address, street, city, state, status, o_date) 
-        VALUES ('$name', '$email', '$phone', '$address', '$apartment', '$city', '$deliveryLocation', '$status', '$date')";
+$sqr = "INSERT INTO customer_orders (name, email, mobile, address, street, city, state, o_date) 
+        VALUES ('$name', '$email', '$phone', '$address', '$apartment', '$city', '$deliveryLocation', '$date')";
 
 if (mysqli_query($conn, $sqr)) {
     // Get the last inserted ID from customer_orders
@@ -64,10 +64,10 @@ if (mysqli_query($conn, $sqr)) {
                 $productid = mysqli_real_escape_string($conn, $cartData['productid']);
                 $quantity = mysqli_real_escape_string($conn, $cartData['quantity']);
                 $size = mysqli_real_escape_string($conn, $cartData['size']);
-
+                $date = date("Y-m-d");
                 // Insert product into view_orders with the last inserted orderid
-                $insertOrderQuery = "INSERT INTO view_orders (productid, email, productname, productprice, quantity, size, orderid) 
-                                     VALUES ('$productid', '$email', '$productname', '$productprice', '$quantity', '$size', '$lastInsertedOrderId')";
+                $insertOrderQuery = "INSERT INTO view_orders (productid, email, productname, productprice, quantity, size, orderid, order_date) 
+                                     VALUES ('$productid', '$email', '$productname', '$productprice', '$quantity', '$size', '$lastInsertedOrderId', '$date')";
                 if (!mysqli_query($conn, $insertOrderQuery)) {
                     echo json_encode(['success' => false, 'message' => 'Error inserting product into order: ' . mysqli_error($conn)]);
                     exit();
