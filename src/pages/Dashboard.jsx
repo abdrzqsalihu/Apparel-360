@@ -1,16 +1,43 @@
 /* eslint-disable react/no-unescaped-entities */
 import {
   //   Eye,
-  EyeOff,
+  //   EyeOff,
   LayoutGrid,
   ShoppingBag,
   User2,
   UserCircle,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
+  const [userDetail, setUserDetail] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Fetch user details from API endpoint
+    fetch(import.meta.env.VITE_REACT_APP_GET_USER_DATA, {
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setUserDetail(data[0]);
+        } else {
+          setUserDetail(null);
+        }
+        // console.log("Fetched user data:", data);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+        setError(error.message);
+      });
+  }, []);
 
   const handleTabChange = (event) => {
     setActiveTab(event.target.value);
@@ -26,18 +53,30 @@ function Dashboard() {
             </h1>
 
             <hr className="mt-8" />
-            <div className="flex items-center gap-5 my-8">
-              <UserCircle className="size-[5rem] md:size-[7rem]" />
-              <div className="flex flex-col gap-2">
-                <h2 className="text-[1.2rem] md:text-[1.38rem] font-medium">
-                  Hi, Abdulrazaq!
-                </h2>
-                <p className="text-[0.9rem] md:text-[1rem] text-gray-700 tracking-tight">
-                  Total Orders: 20
-                </p>
+            {error && (
+              <div className="flex items-center justify-center font-medium py-5">
+                {error}
               </div>
-            </div>
-
+            )}
+            {userDetail ? (
+              <>
+                <div className="flex items-center gap-5 my-8">
+                  <UserCircle className="size-[5rem] md:size-[7rem]" />
+                  <div className="flex flex-col gap-2">
+                    <h2 className="text-[1.2rem] md:text-[1.38rem] font-medium">
+                      Hi, {userDetail.name.split(" ")[0]}!
+                    </h2>
+                    <p className="text-[0.9rem] md:text-[1rem] text-gray-700 tracking-tight">
+                      Total Orders: 20
+                    </p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center justify-center font-medium py-14">
+                Loading...
+              </div>
+            )}
             <hr />
 
             <div className="mt-10">
@@ -123,7 +162,11 @@ function Dashboard() {
             <h1 className="text-[1.3rem] md:text-2xl font-semibold">
               My Orders
             </h1>
-
+            {error && (
+              <div className="flex items-center justify-center font-medium py-5">
+                {error}
+              </div>
+            )}
             <div className="overflow-y-auto mt-10">
               <table className="w-full divide-y-2 divide-gray-200 bg-white text-sm">
                 <thead>
@@ -201,38 +244,59 @@ function Dashboard() {
             <h1 className="text-[1.3rem] md:text-2xl font-semibold">
               Account Information
             </h1>
-            <div className="mx-auto md:w-[98%] flow-root rounded-lg border border-gray-100 py-3 shadow-sm mt-10">
-              <dl className="-my-3 divide-y divide-gray-100 text-sm">
-                <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                  <dt className="font-medium text-gray-900">Full name</dt>
-                  <dd className="text-gray-700 sm:col-span-2">
-                    Abdulrazaq Salihu
-                  </dd>
-                </div>
+            {error && (
+              <div className="flex items-center justify-center font-medium py-5">
+                {error}
+              </div>
+            )}
+            {userDetail ? (
+              <>
+                <div className="mx-auto md:w-[98%] flow-root rounded-lg border border-gray-100 py-3 shadow-sm mt-10">
+                  <dl className="-my-3 divide-y divide-gray-100 text-sm">
+                    <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
+                      <dt className="font-medium text-gray-900">Full name</dt>
+                      <dd className="text-gray-700 sm:col-span-2">
+                        {userDetail.name}
+                      </dd>
+                    </div>
 
-                <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                  <dt className="font-medium text-gray-900">Email address</dt>
-                  <dd className="text-gray-700 sm:col-span-2">
-                    abdrzq.salihu@gmail.com
-                  </dd>
-                </div>
+                    <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
+                      <dt className="font-medium text-gray-900">
+                        Email address
+                      </dt>
+                      <dd className="text-gray-700 sm:col-span-2">
+                        {userDetail.email}
+                      </dd>
+                    </div>
 
-                <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                  <dt className="font-medium text-gray-900">Phone number</dt>
-                  <dd className="text-gray-700 sm:col-span-2">08085458632</dd>
-                </div>
+                    <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
+                      <dt className="font-medium text-gray-900">
+                        Phone number
+                      </dt>
+                      <dd className="text-gray-700 sm:col-span-2">
+                        {userDetail.phone}
+                      </dd>
+                    </div>
 
-                <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                  <dt className="font-medium text-gray-900">Password</dt>
-                  <dd className="flex items-center justify-between text-gray-700 sm:col-span-2">
-                    *********{" "}
-                    <button>
-                      <EyeOff size={16} />
-                    </button>
-                  </dd>
+                    <div className="grid grid-cols-1 gap-1 p-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
+                      <dt className="font-medium text-gray-900">
+                        Account created on
+                      </dt>
+                      <dd className="flex items-center justify-between text-gray-700 sm:col-span-2">
+                        {userDetail.datecreated}{" "}
+                        {/* <button>
+                          <EyeOff size={16} />
+                        </button> */}
+                      </dd>
+                    </div>
+                  </dl>
                 </div>
-              </dl>
-            </div>
+              </>
+            ) : (
+              <div className="flex items-center justify-center font-medium py-14">
+                Loading...
+              </div>
+            )}
           </div>
         );
       default:

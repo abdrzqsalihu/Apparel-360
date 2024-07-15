@@ -61,8 +61,9 @@ if ($action === 'register') {
 
     $stmt_check_email->close();
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-    $stmt = $conn->prepare("INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $name, $email, $phone, $hashed_password);
+    $date_created = date("Y-m-d");
+    $stmt = $conn->prepare("INSERT INTO users (name, email, phone, password, date_created) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssss", $name, $email, $phone, $hashed_password, $date_created);
 
     if ($stmt->execute()) {
         $_SESSION['email'] = $email;

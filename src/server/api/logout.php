@@ -15,7 +15,7 @@ $response = array("success" => false, "message" => "User not logged in.");
 
 if (isset($_SESSION['email'])) {
     // Unset the email session variable
-    unset($_SESSION['email']);
+    // unset($_SESSION['email']);
     session_destroy();
 
     // Update response
