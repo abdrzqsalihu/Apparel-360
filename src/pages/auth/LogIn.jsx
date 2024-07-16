@@ -1,4 +1,4 @@
-import { AtSign, Eye } from "lucide-react";
+import { AtSign, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -7,6 +7,7 @@ import { useAuth } from "../../contexts/AuthContext";
 function LogIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -64,6 +65,10 @@ function LogIn() {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevState) => !prevState);
+  };
+
   return (
     <div className="px-6">
       <div className="w-full py-20">
@@ -103,16 +108,23 @@ function LogIn() {
             </label>
             <div className="relative">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full rounded-lg border border-gray-200 p-4 pe-12 text-sm shadow-sm"
                 placeholder="Enter password"
                 required
               />
-              <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
-                <Eye className="size-4 text-gray-400" />
-              </span>
+              <div
+                className="absolute inset-y-0 end-0 grid place-content-center cursor-pointer px-4"
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? (
+                  <Eye className="size-4 text-gray-400" />
+                ) : (
+                  <EyeOff className="size-4 text-gray-400" />
+                )}
+              </div>
             </div>
           </div>
 

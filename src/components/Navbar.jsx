@@ -1,7 +1,7 @@
 import { Menu, Phone, ShoppingCart, User, X } from "lucide-react";
 import { navLinks } from "../utils/constants";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
 import { useAuth } from "../contexts/AuthContext";
 function Navbar() {
@@ -9,7 +9,9 @@ function Navbar() {
 
   const { cartItemCount } = useCart();
   const { isLoggedIn, logout } = useAuth();
+  const location = useLocation();
 
+  console.log(location);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -127,8 +129,12 @@ function Navbar() {
               {navLinks.map((navLink, index) => (
                 <li key={index}>
                   <Link
-                    className="text-black hover:opacity-80 uppercase text-[14px] font-medium px-1"
                     to={`${navLink.id}`}
+                    className={`text-black hover:opacity-80 uppercase text-[14px] px-1 ${
+                      location.pathname === navLink.id
+                        ? "font-semibold"
+                        : "font-medium"
+                    }`}
                   >
                     {navLink.title}
                   </Link>
@@ -137,8 +143,12 @@ function Navbar() {
               {isLoggedIn && (
                 <li>
                   <Link
-                    className="text-black hover:opacity-80 uppercase text-[14px] font-medium px-1"
                     to={`/dashboard`}
+                    className={`text-black hover:opacity-80 uppercase text-[14px] px-1 ${
+                      location.pathname === "/dashboard"
+                        ? "font-semibold"
+                        : "font-medium"
+                    }`}
                   >
                     Dashboard
                   </Link>
@@ -165,7 +175,9 @@ function Navbar() {
                 >
                   <Link
                     to={`${nav.id}`}
-                    className="w-full block uppercase text-center text-[14px] p-[0.3rem] hover:bg-gray-200 rounded-lg hover:font-semibold"
+                    className={`w-full block uppercase text-center text-[14px] p-[0.3rem] hover:bg-gray-200 rounded-lg hover:font-semibold ${
+                      location.pathname === nav.id ? "font-semibold" : ""
+                    }`}
                     onClick={() => closeMenu()}
                   >
                     {nav.title}
@@ -178,7 +190,9 @@ function Navbar() {
                 >
                   <Link
                     to={`/dashboard`}
-                    className="w-full block uppercase text-center text-[14px] p-[0.3rem] hover:bg-gray-200 rounded-lg hover:font-semibold"
+                    className={`w-full block uppercase text-center text-[14px] p-[0.3rem] hover:bg-gray-200 rounded-lg hover:font-semibold  ${
+                      location.pathname === "/dashboard" ? "font-semibold" : ""
+                    }`}
                     onClick={() => closeMenu()}
                   >
                     Dashboard

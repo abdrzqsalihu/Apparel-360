@@ -54,7 +54,7 @@ function Shop() {
                       </h3>
 
                       <p className="mt-1 text-sm text-gray-700">
-                        ${allProducts.productprice}
+                        ₦{allProducts.productprice}.00
                       </p>
                     </div>
                   </div>

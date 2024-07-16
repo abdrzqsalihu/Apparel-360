@@ -164,7 +164,7 @@ function ShopDetails() {
                     {ProductDetail.productname}
                   </h1>
                   <p className="font-light text-[1rem] mt-4 text-gray-600">
-                    ${ProductDetail.productprice}
+                    ₦{ProductDetail.productprice}.00
                   </p>
 
                   <div className="mt-6 flex items-center gap-6">

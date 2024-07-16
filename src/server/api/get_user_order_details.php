@@ -21,7 +21,7 @@ if ($conn) {
    $email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
 
     // Fetch all user order info
-    $sql = "SELECT * FROM view_orders WHERE email = '$email'";
+    $sql = "SELECT * FROM view_orders WHERE email = '$email' ORDER by id DESC";
     $result = mysqli_query($conn, $sql);
 
     if (mysqli_num_rows($result) > 0) {

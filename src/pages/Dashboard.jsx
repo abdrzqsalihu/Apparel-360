@@ -103,7 +103,8 @@ function Dashboard() {
                       Hi, {userDetail.name.split(" ")[0]}!
                     </h2>
                     <p className="text-[0.9rem] md:text-[1rem] text-gray-700 tracking-tight">
-                      Total Orders: {orderDetails.length}
+                      Total {orderDetails.length > 1 ? "Orders" : "Order"}{" "}
+                      {orderDetails.length}
                     </p>
                   </div>
                 </div>
@@ -117,7 +118,7 @@ function Dashboard() {
 
             <div className="mt-10">
               <h1 className="text-[1.1rem] md:text-[1.2rem] font-medium">
-                Today's Order
+                Today's {todaysOrders.length > 1 ? "Orders" : "Order"}
               </h1>
 
               <div className="overflow-y-auto mt-6">
@@ -143,7 +144,10 @@ function Dashboard() {
                         Status
                       </th>
                       <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                        Delivery Time
+                        Placed On
+                      </th>
+                      <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                        Delivery Date
                       </th>
                       <th className="px-4 py-2"></th>
                     </tr>
@@ -160,7 +164,7 @@ function Dashboard() {
                             {order.productname}
                           </td>
                           <td className="whitespace-nowrap px-4 py-3 text-gray-700">
-                            {order.productprice}
+                            ₦{order.productprice}.00
                           </td>
                           <td className="whitespace-nowrap px-4 py-3 text-gray-700">
                             {order.quantity}
@@ -184,7 +188,12 @@ function Dashboard() {
                             )}
                           </td>
                           <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                            {order.deliveryTime}
+                            {order.order_date}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                            {order.delivery_date
+                              ? order.delivery_date
+                              : "---- -- --"}
                           </td>
                           <td className="whitespace-nowrap px-4 py-2">
                             <a
@@ -216,7 +225,7 @@ function Dashboard() {
         return (
           <div>
             <h1 className="text-[1.3rem] md:text-2xl font-semibold">
-              My Orders
+              All {orderDetails.length > 1 ? "Orders" : "Order"}{" "}
             </h1>
             {error && (
               <div className="flex items-center justify-center font-medium py-5">
@@ -246,7 +255,10 @@ function Dashboard() {
                       Status
                     </th>
                     <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                      Delivery Time
+                      Placed On
+                    </th>
+                    <th className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                      Delivery Date
                     </th>
                     <th className="px-4 py-2"></th>
                   </tr>
@@ -254,16 +266,16 @@ function Dashboard() {
                 {orderDetails ? (
                   <>
                     <tbody className="divide-y divide-gray-200 te">
-                      {orderDetails.map((orderDetails) => (
+                      {orderDetails.map((orderDetails, index) => (
                         <tr key={orderDetails.id}>
                           <td className="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
-                            {orderDetails.id}.
+                            {index + 1}.
                           </td>
                           <td className="whitespace-nowrap px-4 py-3 text-gray-700">
                             {orderDetails.productname}
                           </td>
                           <td className="whitespace-nowrap px-4 py-3 text-gray-700">
-                            ${orderDetails.productprice}
+                            ₦{orderDetails.productprice}.00
                           </td>
                           <td className="whitespace-nowrap px-4 py-3 text-gray-700">
                             {orderDetails.quantity}
@@ -287,7 +299,12 @@ function Dashboard() {
                             )}
                           </td>
                           <td className="whitespace-nowrap px-4 py-3 text-gray-700">
-                            {orderDetails.delivery_date}
+                            {orderDetails.order_date}
+                          </td>
+                          <td className="whitespace-nowrap px-4 py-3 text-gray-700">
+                            {orderDetails.delivery_date
+                              ? orderDetails.delivery_date
+                              : "---- -- --"}
                           </td>
                           <td className="whitespace-nowrap px-4 py-3">
                             <Link

@@ -64,7 +64,7 @@ function RecentProducts() {
                       </h3>
 
                       <p className="mt-1 text-sm text-gray-700">
-                        ${recentProducts.productprice}
+                        ₦{recentProducts.productprice}.00
                       </p>
                     </div>
                   </div>

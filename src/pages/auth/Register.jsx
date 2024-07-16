@@ -1,4 +1,4 @@
-import { AtSign, Eye, Phone, User } from "lucide-react";
+import { AtSign, Eye, EyeOff, Phone, User } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -8,6 +8,7 @@ import { useAuth } from "../../contexts/AuthContext";
 function Register() {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -88,6 +89,10 @@ function Register() {
         });
       }
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevState) => !prevState);
   };
 
   return (
@@ -181,7 +186,7 @@ function Register() {
 
             <div className="relative">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
@@ -190,9 +195,16 @@ function Register() {
                 required
               />
 
-              <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
-                <Eye className="size-4 text-gray-400" />
-              </span>
+              <div
+                className="absolute inset-y-0 end-0 grid place-content-center cursor-pointer px-4"
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? (
+                  <Eye className="size-4 text-gray-400" />
+                ) : (
+                  <EyeOff className="size-4 text-gray-400" />
+                )}
+              </div>
             </div>
           </div>
 

@@ -4,19 +4,19 @@ export const navLinks = [
     title: "Home",
   },
   {
-    id: "shop",
+    id: "/shop",
     title: "Shop",
   },
   {
-    id: "faq",
+    id: "/faq",
     title: "Faq",
   },
   {
-    id: "blog",
+    id: "/blog",
     title: "Blog",
   },
   {
-    id: "contact",
+    id: "/contact",
     title: "Contact Us",
   },
 ];
