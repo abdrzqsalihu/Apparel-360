@@ -25,12 +25,18 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  const clearCart = () => {
+    setCartItemCount(0);
+  };
+
   useEffect(() => {
     fetchCartItems();
   }, []);
 
   return (
-    <CartContext.Provider value={{ cartItemCount, setCartItemCount }}>
+    <CartContext.Provider
+      value={{ cartItemCount, setCartItemCount, clearCart }}
+    >
       {children}
     </CartContext.Provider>
   );

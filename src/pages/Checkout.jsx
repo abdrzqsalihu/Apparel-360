@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useCart } from "../contexts/CartContext";
 
 function Checkout() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { clearCart } = useCart();
   const { totalPrice } = location.state || { totalPrice: 0 };
 
   const [allDeliveryLocation, setAllDeliveryLocation] = useState([]);
@@ -81,6 +83,7 @@ function Checkout() {
     })
       .then((response) => response.json())
       .then((data) => {
+        clearCart();
         if (data.success) {
           // alert("Order placed successfully!");
           Swal.fire({

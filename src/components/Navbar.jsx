@@ -11,7 +11,7 @@ function Navbar() {
   const { isLoggedIn, logout } = useAuth();
   const location = useLocation();
 
-  console.log(location);
+  // console.log(location);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
