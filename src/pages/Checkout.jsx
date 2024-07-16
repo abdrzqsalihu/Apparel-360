@@ -10,10 +10,45 @@ function Checkout() {
   const { totalPrice } = location.state || { totalPrice: 0 };
 
   const [allDeliveryLocation, setAllDeliveryLocation] = useState([]);
+  // eslint-disable-next-line no-unused-vars
+  const [userDetail, setUserDetail] = useState(null);
   const [error, setError] = useState(null);
   const [deliveryPrice, setDeliveryPrice] = useState(0);
   // eslint-disable-next-line no-unused-vars
   const [selectedLocation, setSelectedLocation] = useState(null);
+
+  //   GET USER INFO DATA
+  useEffect(() => {
+    // Fetch user details from API endpoint
+    fetch(import.meta.env.VITE_REACT_APP_GET_USER_DATA, {
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          const user = data[0];
+          setUserDetail(user);
+          setFormData((prevData) => ({
+            ...prevData,
+            name: user.name || "",
+            email: user.email || "",
+            phone: user.phone || "",
+          }));
+        } else {
+          setUserDetail(null);
+        }
+        // console.log("Fetched user data:", data);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+        setError(error.message);
+      });
+  }, []);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -163,11 +198,12 @@ function Checkout() {
                         Email
                       </label>
                       <input
-                        className="w-full rounded-md border border-gray-200 p-3 text-sm"
+                        className="w-full rounded-md border border-gray-200 p-3 text-sm bg-gray-100"
                         placeholder="Email address"
                         type="email"
                         id="email"
                         name="email"
+                        readOnly
                         value={formData.email}
                         onChange={handleChange}
                         required
