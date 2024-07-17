@@ -46,6 +46,13 @@ function Dashboard() {
   useEffect(() => {
     // Fetch user details from API endpoint
     fetch(import.meta.env.VITE_REACT_APP_GET_USER_ORDER_DATA, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        action: "order_details",
+      }),
       credentials: "include",
     })
       .then((response) => {
@@ -308,7 +315,7 @@ function Dashboard() {
                           </td>
                           <td className="whitespace-nowrap px-4 py-3">
                             <Link
-                              to={orderDetails.orderid}
+                              to={`/orderdetails/${orderDetails.orderid}`}
                               className="inline-block rounded bg-gray-900 px-4 py-2 text-xs font-medium text-white hover:bg-gray-800"
                             >
                               View details
