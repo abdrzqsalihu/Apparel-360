@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useAuth } from "../../contexts/AuthContext";
+import { useCart } from "../../contexts/CartContext";
 
 function LogIn() {
   const [email, setEmail] = useState("");
@@ -10,6 +11,7 @@ function LogIn() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { fetchCartItems } = useCart();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,8 +42,9 @@ function LogIn() {
           confirmButtonText: "Close",
         });
 
-        navigate("/shop");
+        fetchCartItems(); // Fetch cart items to update the cart count
         login(); // Call login function to update the auth state
+        navigate("/shop");
       } else {
         // Login failed, show error message
         Swal.fire({
