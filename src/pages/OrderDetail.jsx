@@ -3,22 +3,29 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 function OrderDetail() {
-  const { id } = useParams();
+  const { order_id } = useParams();
+  const { delivery_id } = useParams();
+
   const [ProductDetail, setProductDetail] = useState(null);
   const [DeliveryDetail, setDeliveryDetail] = useState(null);
   const [error, setError] = useState(null);
   useEffect(() => {
     // Fetch product details from API endpoint
-    fetch(`${import.meta.env.VITE_REACT_APP_GET_USER_ORDER_DATA}?id=${id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        action: "order_details",
-      }),
-      credentials: "include",
-    })
+    fetch(
+      `${
+        import.meta.env.VITE_REACT_APP_GET_USER_ORDER_DATA
+      }?order_id=${order_id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "order_details",
+        }),
+        credentials: "include",
+      }
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -36,20 +43,25 @@ function OrderDetail() {
       .catch((error) => {
         setError(error.message);
       });
-  }, [id]);
+  }, [order_id]);
 
   useEffect(() => {
     // Fetch product details from API endpoint
-    fetch(`${import.meta.env.VITE_REACT_APP_GET_USER_ORDER_DATA}?id=${id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        action: "delivery_info",
-      }),
-      credentials: "include",
-    })
+    fetch(
+      `${
+        import.meta.env.VITE_REACT_APP_GET_USER_ORDER_DATA
+      }?delivery_id=${delivery_id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "delivery_info",
+        }),
+        credentials: "include",
+      }
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -67,7 +79,7 @@ function OrderDetail() {
       .catch((error) => {
         setError(error.message);
       });
-  }, [id]);
+  }, [delivery_id]);
 
   return (
     <div>

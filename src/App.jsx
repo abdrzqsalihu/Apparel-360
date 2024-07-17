@@ -29,7 +29,10 @@ function App() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/success" element={<Success />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/orderdetails/:id" element={<OrderDetail />} />
+        <Route
+          path="/orderdetails/:delivery_id/:order_id"
+          element={<OrderDetail />}
+        />
         {/* AUTH ROUTES  */}
         <Route path="/login" element={<LogIn />} />
         <Route path="/register" element={<Register />} />

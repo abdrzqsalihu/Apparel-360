@@ -26,18 +26,19 @@ $data = json_decode(file_get_contents("php://input"));
 $action = isset($data->action) ? $data->action : '';
 
 $email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
-$id = isset($_GET['id']) ? (int)$_GET['id'] : null;
+$order_id = isset($_GET['order_id']) ? (int)$_GET['order_id'] : null;
+$delivery_id = isset($_GET['delivery_id']) ? (int)$_GET['delivery_id'] : null;
 
 if ($action === 'order_details') {
 
 if ($conn) {
 
-   if ($id) {
+   if ($order_id) {
   // Fetch all user order info by ID
   $sql = "  SELECT vo.*, product_image AS productimage
             FROM view_orders vo
             JOIN products p ON vo.productid = p.id
-            WHERE vo.email = '$email' AND vo.id = $id";
+            WHERE vo.email = '$email' AND vo.id = $order_id";
   $result = mysqli_query($conn, $sql);
 }  else {
     // Fetch all user order info
@@ -78,9 +79,9 @@ if ($conn) {
 
 }elseif ($action === 'delivery_info') {
  
-    if ($id) {
+    if ($delivery_id) {
    // Fetch all user order info by ID
-   $sql = "SELECT * FROM customer_orders WHERE id = '$id'";
+   $sql = "SELECT * FROM customer_orders WHERE id = '$delivery_id'";
    $result = mysqli_query($conn, $sql);
 
    if (mysqli_num_rows($result) > 0) {

@@ -203,12 +203,12 @@ function Dashboard() {
                               : "---- -- --"}
                           </td>
                           <td className="whitespace-nowrap px-4 py-2">
-                            <a
-                              href="#"
+                            <Link
+                              to={`/orderdetails/${order.orderid}/${order.id}`}
                               className="inline-block rounded bg-gray-900 px-4 py-2 text-xs font-medium text-white hover:bg-gray-800"
                             >
                               View details
-                            </a>
+                            </Link>
                           </td>
                         </tr>
                       ))
@@ -315,7 +315,7 @@ function Dashboard() {
                           </td>
                           <td className="whitespace-nowrap px-4 py-3">
                             <Link
-                              to={`/orderdetails/${orderDetails.orderid}`}
+                              to={`/orderdetails/${orderDetails.orderid}/${orderDetails.id}`}
                               className="inline-block rounded bg-gray-900 px-4 py-2 text-xs font-medium text-white hover:bg-gray-800"
                             >
                               View details
