@@ -11,6 +11,7 @@ function ShopDetails() {
   const [quantity, setQuantity] = useState(1);
   const [size, setSize] = useState("");
   const { setCartItemCount } = useCart(); // Get the setCartItemCount function from context
+  const { fetchCartItems } = useCart();
 
   useEffect(() => {
     // Fetch product details from API endpoint
@@ -86,6 +87,7 @@ function ShopDetails() {
       .then((data) => {
         if (data.success) {
           // alert("Product added to cart!");
+          fetchCartItems(); // Fetch cart items to update the cart count
           Swal.fire({
             title: "Success!",
             text: "Product added to cart!",
