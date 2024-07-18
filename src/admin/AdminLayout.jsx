@@ -5,7 +5,7 @@ import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import Orders from "./pages/Orders";
 import Products from "./pages/Products";
-// import Settings from "./pages/Settings";
+import Settings from "./pages/Settings";
 
 function AdminLayout() {
   return (
@@ -19,7 +19,7 @@ function AdminLayout() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/products" element={<Products />} />
-          {/* <Route path="/admin/settings" element={<Settings />} /> */}
+          <Route path="/settings" element={<Settings />} />
         </Routes>
       </div>
     </div>
