@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import { useCart } from "./CartContext";
 
 // Create the AuthContext
 const AuthContext = createContext();
@@ -13,6 +14,7 @@ export const useAuth = () => {
 // eslint-disable-next-line react/prop-types
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { clearCart } = useCart(); // Use the clearCart function from CartContext
 
   useEffect(() => {
     // Check if the user is logged in when the app loads
@@ -37,6 +39,7 @@ export const AuthProvider = ({ children }) => {
       if (result.success) {
         setIsLoggedIn(false);
         localStorage.removeItem("isLoggedIn");
+        clearCart(); // Clear the cart on logout
         Swal.fire({
           title: "Success!",
           text: "Logout successful!",
