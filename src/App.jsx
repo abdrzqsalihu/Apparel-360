@@ -1,5 +1,5 @@
 import HomePage from "./pages/Home/Page";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Shop from "./pages/Products/Shop";
 import ShopDetails from "./pages/Products/ShopDetails";
 import ScrollToTop from "./components/ScrollToTop";
@@ -13,11 +13,16 @@ import Register from "./pages/auth/Register";
 import Success from "./pages/Success";
 import Dashboard from "./pages/Dashboard";
 import OrderDetail from "./pages/OrderDetail";
+import AdminLayout from "./admin/AdminLayout";
+import Navbar from "./components/Navbar";
 
 function App() {
+  const location = useLocation();
+  const isOnAdminPage = location.pathname.startsWith("/admin");
   return (
     <>
       <ScrollToTop />
+      {!isOnAdminPage && <Navbar />}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/shop" element={<Shop />} />
@@ -36,8 +41,11 @@ function App() {
         {/* AUTH ROUTES  */}
         <Route path="/login" element={<LogIn />} />
         <Route path="/register" element={<Register />} />
+        {/* ADMIN ROUTES  */}
+        {/* <Route path="/admin" element={<AdminLayout />} /> */}
+        {/* Admin Route */}
+        <Route path="/admin/*" element={<AdminLayout />} />
       </Routes>
-      {/* </BrowserRouter> */}
     </>
   );
 }
