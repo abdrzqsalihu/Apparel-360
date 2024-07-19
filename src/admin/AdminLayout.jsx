@@ -9,18 +9,22 @@ import Settings from "./pages/Settings";
 
 function AdminLayout() {
   return (
-    <div>
-      <Sidebar />
+    <div className="relative lg:flex overflow-hidden">
+      <div className="flex md:h-full md:w-64 flex-col fixed inset-y-0 z-50">
+        <Sidebar />
+      </div>
 
-      <div className="admin-content">
+      <div className="flex flex-col flex-grow md:ml-72">
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/settings" element={<Settings />} />
-        </Routes>
+        <div className="mt-10">
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/settings" element={<Settings />} />
+          </Routes>
+        </div>
       </div>
     </div>
   );
