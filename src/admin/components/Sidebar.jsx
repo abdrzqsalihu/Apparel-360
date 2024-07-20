@@ -19,7 +19,7 @@ function Sidebar() {
       <div className="flex h-screen flex-col justify-between border-e bg-white">
         <div className="py-5">
           <div className="px-4 flex items-center justify-between border-b border-gray-300 pb-4">
-            <div className="flex items-center h-10 w-36 place-content-center">
+            <div className="flex items-center h-9 w-36 place-content-center">
               <img className="w-9 h-9" src="/logo.svg" width={40} alt="logo" />
               <p className="text-sm ml-2 font-semibold">APPAREL 360</p>
             </div>

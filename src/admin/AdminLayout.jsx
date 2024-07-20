@@ -9,14 +9,14 @@ import Settings from "./pages/Settings";
 
 function AdminLayout() {
   return (
-    <div className="relative lg:flex overflow-hidden">
+    <div className="relative lg:flex overflow-hidden bg-gray-100 h-screen">
       <div className="flex md:h-full md:w-64 flex-col fixed inset-y-0 z-50">
         <Sidebar />
       </div>
 
-      <div className="flex flex-col flex-grow md:ml-72">
+      <div className="flex flex-col flex-grow">
         <Navbar />
-        <div className="mt-10">
+        <div className="mt-10 md:ml-72">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/dashboard" element={<Dashboard />} />
