@@ -11,12 +11,42 @@ import {
   UserPlus,
   Users,
 } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
-function Sidebar() {
+// eslint-disable-next-line react/prop-types
+function Sidebar({ openNavigation, toggleNavigation }) {
+  const sidebarRef = useRef(null);
+
+  const handleClickOutside = (event) => {
+    if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+      if (openNavigation) {
+        toggleNavigation();
+      }
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openNavigation]);
+  const handleClick = () => {
+    if (openNavigation) {
+      toggleNavigation();
+    }
+  };
   return (
-    <div>
-      <div className="flex h-screen flex-col justify-between border-e bg-white">
+    <div ref={sidebarRef}>
+      <div
+        className={`${
+          openNavigation
+            ? "flex w-[17rem] ease-out md:w-auto"
+            : "hidden md:flex"
+        }  h-screen flex-col justify-between border-e bg-white z-50`}
+      >
         <div className="py-5">
           <div className="px-4 flex items-center justify-between border-b border-gray-300 pb-4">
             <div className="flex items-center h-9 w-36 place-content-center">
@@ -28,6 +58,9 @@ function Sidebar() {
               <ArrowLeftToLine
                 size={26}
                 className="border border-gray-200 p-[0.35rem] rounded-md cursor-pointer"
+                onClick={() => {
+                  handleClick();
+                }}
               />
             </div>
           </div>
@@ -40,6 +73,9 @@ function Sidebar() {
               <Link
                 to={`dashboard`}
                 className="flex w-full items-center bg-gray-100 rounded-md px-2 py-2 mt-2"
+                onClick={() => {
+                  handleClick();
+                }}
               >
                 <LayoutDashboard size={16} />
                 <span className="text-sm font-medium text-gray-800 ml-2 tracking-tighter">
@@ -51,6 +87,9 @@ function Sidebar() {
               <Link
                 to={`/`}
                 className="flex w-full items-center rounded-md px-2 py-2 mt-2"
+                onClick={() => {
+                  handleClick();
+                }}
               >
                 <ShoppingBag size={16} />
                 <span className="text-sm font-medium text-gray-800 ml-2 tracking-tighter">
@@ -62,6 +101,9 @@ function Sidebar() {
               <Link
                 to={`/`}
                 className="flex w-full items-center rounded-md px-2 py-2 mt-2"
+                onClick={() => {
+                  handleClick();
+                }}
               >
                 <Users size={16} />
                 <span className="text-sm font-medium text-gray-800 ml-2 tracking-tighter">

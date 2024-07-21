@@ -6,16 +6,39 @@ import Dashboard from "./pages/Dashboard";
 import Orders from "./pages/Orders";
 import Products from "./pages/Products";
 import Settings from "./pages/Settings";
+import { useState } from "react";
 
 function AdminLayout() {
+  const [openNavigation, setOpenNavigation] = useState(false);
+
+  const toggleNavigation = () => {
+    // console.log("Toggling navigation. Current state:", openNavigation);
+    setOpenNavigation((prev) => {
+      const newState = !prev;
+      // console.log("New state:", newState);
+      return newState;
+    });
+  };
   return (
     <div className="relative lg:flex overflow-hidden bg-gray-100 h-screen">
-      <div className="flex md:h-full md:w-64 flex-col fixed inset-y-0 z-50">
-        <Sidebar />
+      <div
+        className={`flex h-full md:w-64 flex-col fixed inset-y-0 z-50 transition-all duration-300 ease-in-out ${
+          openNavigation
+            ? "translate-x-0"
+            : "-translate-x-full md:-translate-x-0"
+        }`}
+      >
+        <Sidebar
+          openNavigation={openNavigation}
+          toggleNavigation={toggleNavigation}
+        />
       </div>
 
-      <div className="flex flex-col flex-grow">
-        <Navbar />
+      <div className="flex flex-col flex-grow ">
+        <Navbar
+          openNavigation={openNavigation}
+          toggleNavigation={toggleNavigation}
+        />
         <div className="mt-10 md:ml-72">
           <Routes>
             <Route path="/" element={<Dashboard />} />
