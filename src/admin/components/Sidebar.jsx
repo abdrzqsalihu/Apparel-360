@@ -13,10 +13,12 @@ import {
   Users,
 } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
 function Sidebar({ openNavigation, toggleNavigation }) {
+  const location = useLocation();
+  console.log(location);
   const sidebarRef = useRef(null);
 
   const handleClickOutside = (event) => {
@@ -73,7 +75,9 @@ function Sidebar({ openNavigation, toggleNavigation }) {
             <li>
               <Link
                 to={`dashboard`}
-                className="flex w-full items-center bg-gray-100 rounded-md px-2 py-2 mt-2"
+                className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
+                  location.pathname === "/admin/dashboard" ? "bg-gray-100" : ""
+                }`}
                 onClick={() => {
                   handleClick();
                 }}
@@ -86,8 +90,10 @@ function Sidebar({ openNavigation, toggleNavigation }) {
             </li>
             <li>
               <Link
-                to={`/`}
-                className="flex w-full items-center rounded-md px-2 py-2 mt-2"
+                to={`orders`}
+                className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
+                  location.pathname === "/admin/orders" ? "bg-gray-100" : ""
+                }`}
                 onClick={() => {
                   handleClick();
                 }}
@@ -100,8 +106,10 @@ function Sidebar({ openNavigation, toggleNavigation }) {
             </li>
             <li>
               <Link
-                to={`/`}
-                className="flex w-full items-center rounded-md px-2 py-2 mt-2"
+                to={`customers`}
+                className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
+                  location.pathname === "/admin/customers" ? "bg-gray-100" : ""
+                }`}
                 onClick={() => {
                   handleClick();
                 }}
@@ -114,8 +122,10 @@ function Sidebar({ openNavigation, toggleNavigation }) {
             </li>
             <li>
               <Link
-                to={`/`}
-                className="flex w-full items-center justify-between rounded-md px-2 py-2 mt-2"
+                to={`messages`}
+                className={`flex w-full items-center justify-between rounded-md px-2 py-2 mt-2 ${
+                  location.pathname === "/admin/messages" ? "bg-gray-100" : ""
+                }`}
               >
                 <div className="flex items-center text-sm font-medium text-gray-800 tracking-tighter">
                   <MessageSquareDot size={16} />
@@ -133,48 +143,56 @@ function Sidebar({ openNavigation, toggleNavigation }) {
               TOOLS
             </p>
             <li>
-              <div className="flex w-full items-center rounded-md px-2 py-2 mt-2">
+              <Link
+                to="products"
+                className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
+                  location.pathname === "/admin/products" ? "bg-gray-100" : ""
+                }`}
+              >
                 <Store size={16} />
-                <Link
-                  to="products"
-                  className="text-sm font-medium text-gray-800 ml-2 tracking-tighter"
-                >
+                <span className="text-sm font-medium text-gray-800 ml-2 tracking-tighter">
                   Products
-                </Link>
-              </div>
+                </span>
+              </Link>
             </li>
             <li>
-              <div className="flex w-full items-center rounded-md px-2 py-2 mt-2">
+              <Link
+                to="blogs"
+                className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
+                  location.pathname === "/admin/blogs" ? "bg-gray-100" : ""
+                }`}
+              >
                 <BookText size={16} />
-                <Link
-                  to="blogs"
-                  className="text-sm font-medium text-gray-800 ml-2 tracking-tighter"
-                >
+                <span className="text-sm font-medium text-gray-800 ml-2 tracking-tighter">
                   Blogs
-                </Link>
-              </div>
+                </span>
+              </Link>
             </li>
             <li>
-              <div className="flex w-full items-center rounded-md px-2 py-2 mt-2">
+              <Link
+                to=""
+                className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
+                  location.pathname === "/admin/invoices" ? "bg-gray-100" : ""
+                }`}
+              >
                 <FileText size={16} />
-                <Link
-                  to=""
-                  className="text-sm font-medium text-gray-800 ml-2 tracking-tighter"
-                >
+                <span className="text-sm font-medium text-gray-800 ml-2 tracking-tighter">
                   Invoice
-                </Link>
-              </div>
+                </span>
+              </Link>
             </li>
             <li>
-              <div className="flex w-full items-center rounded-md px-2 py-2 mt-2">
+              <Link
+                to=""
+                className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
+                  location.pathname === "/admin/analytics" ? "bg-gray-100" : ""
+                }`}
+              >
                 <BarChartBig size={16} />
-                <Link
-                  to="/"
-                  className="text-sm font-medium text-gray-800 ml-2 tracking-tighter"
-                >
+                <span className="text-sm font-medium text-gray-800 ml-2 tracking-tighter">
                   Analytics
-                </Link>
-              </div>
+                </span>
+              </Link>
             </li>
           </ul>
           <ul className="px-4 mt-6 space-y-2 ">
@@ -182,37 +200,41 @@ function Sidebar({ openNavigation, toggleNavigation }) {
               ACCOUNT
             </p>
             <li>
-              <div className="flex w-full items-center rounded-md px-2 py-2 mt-2">
+              <Link
+                to="settings"
+                className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
+                  location.pathname === "/admin/settings" ? "bg-gray-100" : ""
+                }`}
+              >
                 <Settings size={16} />
-                <Link
-                  to="settings"
-                  className="text-sm font-medium text-gray-800 ml-2 tracking-tighter"
-                >
+                <span className="text-sm font-medium text-gray-800 ml-2 tracking-tighter">
                   Settings
-                </Link>
-              </div>
+                </span>
+              </Link>
             </li>
             <li>
-              <div className="flex w-full items-center rounded-md px-2 py-2 mt-2">
+              <Link
+                to=""
+                className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
+                  location.pathname === "/admin/admin" ? "bg-gray-100" : ""
+                }`}
+              >
                 <UserPlus size={16} />
-                <Link
-                  to=""
-                  className="text-sm font-medium text-gray-800 ml-2 tracking-tighter"
-                >
+                <span className="text-sm font-medium text-gray-800 ml-2 tracking-tighter">
                   Admin control
-                </Link>
-              </div>
+                </span>
+              </Link>
             </li>
             <li>
-              <div className="flex w-full items-center rounded-md px-2 py-2 mt-2">
+              <Link
+                to="/"
+                className="flex w-full items-center rounded-md px-2 py-2 mt-2"
+              >
                 <LogOut size={16} />
-                <Link
-                  to="/"
-                  className="text-sm font-medium text-gray-800 ml-2 tracking-tighter"
-                >
+                <Link className="text-sm font-medium text-gray-800 ml-2 tracking-tighter">
                   Logout
                 </Link>
-              </div>
+              </Link>
             </li>
           </ul>
         </div>
