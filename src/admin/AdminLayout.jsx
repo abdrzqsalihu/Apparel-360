@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/dashboard/Dashboard";
 import Orders from "./pages/Orders";
 import Products from "./pages/Products";
 import Settings from "./pages/Settings";
@@ -39,7 +39,7 @@ function AdminLayout() {
           openNavigation={openNavigation}
           toggleNavigation={toggleNavigation}
         />
-        <div className="mt-10 md:ml-72">
+        <div className="mt-10 md:ml-64">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/dashboard" element={<Dashboard />} />

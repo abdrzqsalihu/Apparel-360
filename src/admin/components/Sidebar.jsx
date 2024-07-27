@@ -1,6 +1,7 @@
 import {
   ArrowLeftToLine,
   BarChartBig,
+  BookText,
   FileText,
   LayoutDashboard,
   LogOut,
@@ -139,6 +140,17 @@ function Sidebar({ openNavigation, toggleNavigation }) {
                   className="text-sm font-medium text-gray-800 ml-2 tracking-tighter"
                 >
                   Products
+                </Link>
+              </div>
+            </li>
+            <li>
+              <div className="flex w-full items-center rounded-md px-2 py-2 mt-2">
+                <BookText size={16} />
+                <Link
+                  to="blogs"
+                  className="text-sm font-medium text-gray-800 ml-2 tracking-tighter"
+                >
+                  Blogs
                 </Link>
               </div>
             </li>

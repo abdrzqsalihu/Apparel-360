@@ -23,7 +23,7 @@ function Navbar({ toggleNavigation, openNavigation }) {
           // className="w-12 h-12 md:hidden"
           className={`${
             openNavigation ? "hidden" : "flex"
-          } md:hidden w-12 h-12`}
+          } md:hidden w-11 h-11`}
           alt="logo"
         />
 
