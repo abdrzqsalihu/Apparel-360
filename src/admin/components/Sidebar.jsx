@@ -76,7 +76,10 @@ function Sidebar({ openNavigation, toggleNavigation }) {
               <Link
                 to={`dashboard`}
                 className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
-                  location.pathname === "/admin/dashboard" ? "bg-gray-100" : ""
+                  location.pathname === "/admin/dashboard" ||
+                  location.pathname === "/admin/"
+                    ? "bg-gray-100"
+                    : ""
                 }`}
                 onClick={() => {
                   handleClick();
@@ -170,7 +173,7 @@ function Sidebar({ openNavigation, toggleNavigation }) {
             </li>
             <li>
               <Link
-                to=""
+                to="invoices"
                 className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
                   location.pathname === "/admin/invoices" ? "bg-gray-100" : ""
                 }`}
@@ -183,7 +186,7 @@ function Sidebar({ openNavigation, toggleNavigation }) {
             </li>
             <li>
               <Link
-                to=""
+                to="analytics"
                 className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
                   location.pathname === "/admin/analytics" ? "bg-gray-100" : ""
                 }`}
@@ -214,7 +217,7 @@ function Sidebar({ openNavigation, toggleNavigation }) {
             </li>
             <li>
               <Link
-                to=""
+                to="admin"
                 className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
                   location.pathname === "/admin/admin" ? "bg-gray-100" : ""
                 }`}
