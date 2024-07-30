@@ -12,10 +12,7 @@ function Pagination() {
           className="hidden items-center justify-between sm:flex"
           aria-label="Pagination"
         >
-          <a
-            href="javascript:void(0)"
-            className="hover:text-gray-700 hover:opacity-80 flex items-center gap-x-2"
-          >
+          <button className="hover:text-gray-700 hover:opacity-80 flex items-center gap-x-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
@@ -29,15 +26,14 @@ function Pagination() {
               />
             </svg>
             Previous
-          </a>
+          </button>
           <ul className="flex items-center gap-1">
             {pages.map((item, idx) => (
               <li key={idx} className="text-sm">
                 {item == "..." ? (
                   <div>{item}</div>
                 ) : (
-                  <a
-                    href="javascript:void(0)"
+                  <button
                     aria-current={currentPage == item ? "page" : false}
                     className={`px-3 py-1 rounded-lg duration-150 hover:text-gray-100 hover:bg-gray-600 ${
                       currentPage == item
@@ -46,15 +42,12 @@ function Pagination() {
                     }`}
                   >
                     {item}
-                  </a>
+                  </button>
                 )}
               </li>
             ))}
           </ul>
-          <a
-            href="javascript:void(0)"
-            className="hover:text-gray-700 hover:opacity-80 flex items-center gap-x-2"
-          >
+          <button className="hover:text-gray-700 hover:opacity-80 flex items-center gap-x-2">
             Next
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -68,25 +61,19 @@ function Pagination() {
                 clipRule="evenodd"
               />
             </svg>
-          </a>
+          </button>
         </div>
         {/* On mobile version */}
         <div className="flex items-center justify-between text-sm text-gray-600 font-medium sm:hidden">
-          <a
-            href="javascript:void(0)"
-            className="px-4 py-2 border rounded-lg duration-150 hover:bg-gray-50"
-          >
+          <button className="px-4 py-2 border rounded-lg duration-150 hover:bg-gray-50">
             Previous
-          </a>
+          </button>
           <div className="font-medium">
             Page {currentPage} of {pages.length}
           </div>
-          <a
-            href="javascript:void(0)"
-            className="px-4 py-2 border rounded-lg duration-150 hover:bg-gray-50"
-          >
+          <button className="px-4 py-2 border rounded-lg duration-150 hover:bg-gray-50">
             Next
-          </a>
+          </button>
         </div>
       </div>
     </div>

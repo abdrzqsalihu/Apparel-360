@@ -20,7 +20,7 @@ function AdminLayout() {
     });
   };
   return (
-    <div className="relative lg:flex overflow-hidden bg-gray-100 h-screen">
+    <div className="relative lg:flex overflow-hidden overflow-y-auto bg-gray-100 h-screen">
       <div
         className={`flex h-full md:w-64 flex-col fixed inset-y-0 z-50 transition-all duration-300 ease-in-out ${
           openNavigation
