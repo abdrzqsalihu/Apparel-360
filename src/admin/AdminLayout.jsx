@@ -3,7 +3,7 @@ import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 
 import Dashboard from "./pages/dashboard/Dashboard";
-import Orders from "./pages/Orders";
+import Orders from "./pages/orders/Orders";
 import Products from "./pages/Products";
 import Settings from "./pages/Settings";
 import { useState } from "react";
