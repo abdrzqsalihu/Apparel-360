@@ -9,7 +9,7 @@ import {
 function Overview() {
   return (
     <div>
-      <h1 className="text-2xl font-medium tracking-tight text-gray-800 mb-6">
+      <h1 className="text-2xl font-semibold tracking-tight text-gray-800 mb-6">
         Dashboard
       </h1>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-4 lg:gap-5">

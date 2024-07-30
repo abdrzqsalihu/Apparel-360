@@ -87,7 +87,7 @@ function OrderTable() {
                 </td>
                 <td className="px-6 py-3 whitespace-nowrap">
                   <Link
-                    to={`orderdetails`}
+                    to={`orderdetails/${item.id}`}
                     className="inline-block rounded border border-gray-900 px-3 py-2 text-xs font-medium text-gray-800 hover:text-white hover:bg-gray-800"
                   >
                     View details

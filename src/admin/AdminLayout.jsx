@@ -7,6 +7,7 @@ import Orders from "./pages/orders/Orders";
 import Products from "./pages/Products";
 import Settings from "./pages/Settings";
 import { useState } from "react";
+import OrderDetails from "./pages/orders/components/OrderDetails";
 
 function AdminLayout() {
   const [openNavigation, setOpenNavigation] = useState(false);
@@ -44,6 +45,10 @@ function AdminLayout() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/orders" element={<Orders />} />
+            <Route
+              path="orders/orderdetails/:order_id"
+              element={<OrderDetails />}
+            />
             <Route path="/products" element={<Products />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
