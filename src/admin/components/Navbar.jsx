@@ -3,7 +3,7 @@ import { BadgeHelp, BellDot, MenuIcon } from "lucide-react";
 // eslint-disable-next-line react/prop-types
 function Navbar({ toggleNavigation, openNavigation }) {
   return (
-    <div>
+    <div className="fixed w-full">
       <div className="flex p-5 border-b items-center justify-between md:justify-end bg-white h-[4.56rem] border-gray-300">
         <button
           id="menuButton"

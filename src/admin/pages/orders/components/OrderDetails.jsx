@@ -1,33 +1,98 @@
-import { Calendar, Loader2Icon } from "lucide-react";
-import { useRef } from "react";
+import {
+  ArrowLeftCircleIcon,
+  Calendar,
+  CheckCircle2,
+  Loader2Icon,
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
 function OrderDetails() {
-  const tableItems = [
-    {
-      name: "Solo learn app",
-      qty: "9",
-      size: "M",
-      price: "3500",
-    },
-    {
-      name: "Window wrapper",
-      qty: "1",
-      size: "XL",
-      price: "5000",
-    },
-    {
-      name: "Unity loroin",
-      qty: "5",
-      size: "S",
-      price: "200",
-    },
-    {
-      name: "Background remover",
-      qty: "9",
-      size: "L",
-      price: "3200",
-    },
-  ];
+  const { order_id } = useParams();
+
+  const [ProductDetail, setProductDetail] = useState([]);
+  const [DeliveryDetail, setDeliveryDetail] = useState(null);
+  const [error, setError] = useState(null);
+
+  //   Fetch all user order info
+  useEffect(() => {
+    // Fetch product details from API endpoint
+    fetch(
+      `${
+        import.meta.env.VITE_REACT_APP_ADMIN_GET_USER_ORDER_DETAILS_DATA
+      }?order_id=${order_id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "order_details",
+        }),
+        credentials: "include",
+      }
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setProductDetail(data);
+        } else {
+          setProductDetail([]);
+        }
+        console.log(data);
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  }, [order_id]);
+
+  // Function to calculate total amount
+  const calculateTotal = () => {
+    return ProductDetail.reduce((total, item) => {
+      return total + item.productprice * item.quantity;
+    }, 0).toFixed(2); // Ensure total is formatted to two decimal places
+  };
+
+  // Fetch delivery details from API endpoint
+  useEffect(() => {
+    fetch(
+      `${
+        import.meta.env.VITE_REACT_APP_ADMIN_GET_USER_ORDER_DETAILS_DATA
+      }?delivery_id=${order_id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "delivery_info",
+        }),
+        credentials: "include",
+      }
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setDeliveryDetail(data[0]);
+        } else {
+          setDeliveryDetail(null);
+        }
+        console.log(data);
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  }, [order_id]);
 
   const dateInputRef = useRef(null);
 
@@ -40,14 +105,26 @@ function OrderDetails() {
   return (
     <section className="mx-auto mb-[14rem] px-5 md:px-8 ">
       <div className="mx-auto ">
-        <h1 className="text-2xl font-semibold tracking-tight text-gray-800 mb-6">
+        <h1 className="flex items-center gap-4 text-2xl font-semibold tracking-tight text-gray-800 mb-6">
+          {" "}
+          <Link to={`/admin/orders`}>
+            <ArrowLeftCircleIcon size={25} />
+          </Link>{" "}
           Order Details
         </h1>
+
+        {error && (
+          <div className="flex items-center justify-center font-medium py-5">
+            {error}
+          </div>
+        )}
+
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8">
           {/* FIRST GRID  */}
           <div className="lg:col-span-2">
+            {/* ITEM Details */}
             <div className="mx-auto bg-white py-10 rounded-lg px-6">
-              <div className="overflow-auto">
+              <div className="overflow-auto max-h-[22rem]">
                 <table className="w-full table-auto text-sm text-left bg-white">
                   <thead className="text-gray-600 font-medium border-b">
                     <tr>
@@ -58,27 +135,27 @@ function OrderDetails() {
                     </tr>
                   </thead>
                   <tbody className="text-gray-600 divide-y">
-                    {tableItems.map((item, idx) => (
+                    {ProductDetail.map((item, idx) => (
                       <tr key={idx}>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center gap-4">
                             <img
-                              src={`/products/product_3.jpg`}
+                              src={`/products/${item.productimage}`}
                               alt="product image"
-                              className="w-8 h-9"
+                              className="w-9 h-10 rounded-sm"
                             />
-                            <span>{item.name}</span>
+                            <span>{item.productname}</span>
                           </div>
                         </td>
                         <td className="px-6 py-4 pl-10 whitespace-nowrap">
-                          {item.qty}
+                          {item.quantity}
                         </td>
 
                         <td className="px-6 py-4 whitespace-nowrap">
                           {item.size}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          {item.price}
+                          {item.productprice}
                         </td>
                       </tr>
                     ))}
@@ -86,96 +163,140 @@ function OrderDetails() {
                 </table>
               </div>
             </div>
-
+            {/* DELIVERY DETAILS  */}
             <div className="flow-root bg-white py-10 px-6 rounded-lg mt-10">
               <h1 className="text-[18px] font-semibold tracking-wider">
                 Delivery details
               </h1>
               <hr className="border-gray-100 my-5" />
-              <dl className="-my-3 divide-y divide-gray-100 text-sm">
-                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
-                  <dt className="font-medium text-gray-900">Address</dt>
-                  <dd className="text-gray-700 sm:col-span-2">
-                    Chicken republic junction
-                  </dd>
-                </div>
+              {DeliveryDetail ? (
+                <>
+                  <dl className="-my-3 divide-y divide-gray-100 text-sm">
+                    <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+                      <dt className="font-medium text-gray-900">Address</dt>
+                      <dd className="text-gray-700 sm:col-span-2">
+                        {DeliveryDetail.address}
+                      </dd>
+                    </div>
 
-                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
-                  <dt className="font-medium text-gray-900">Street</dt>
-                  <dd className="text-gray-700 sm:col-span-2">Ladan street</dd>
-                </div>
+                    <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+                      <dt className="font-medium text-gray-900">Street</dt>
+                      <dd className="text-gray-700 sm:col-span-2">
+                        {DeliveryDetail.street}
+                      </dd>
+                    </div>
 
-                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
-                  <dt className="font-medium text-gray-900">City</dt>
-                  <dd className="text-gray-700 sm:col-span-2">Zuba</dd>
-                </div>
+                    <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+                      <dt className="font-medium text-gray-900">City</dt>
+                      <dd className="text-gray-700 sm:col-span-2">
+                        {DeliveryDetail.city}
+                      </dd>
+                    </div>
 
-                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
-                  <dt className="font-medium text-gray-900">State</dt>
-                  <dd className="text-gray-700 sm:col-span-2">Abuja</dd>
+                    <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+                      <dt className="font-medium text-gray-900">State</dt>
+                      <dd className="text-gray-700 sm:col-span-2">
+                        {DeliveryDetail.state}
+                      </dd>
+                    </div>
+                  </dl>
+                </>
+              ) : (
+                <div className="flex items-center justify-center font-medium">
+                  Loading...
                 </div>
-              </dl>
+              )}
             </div>
           </div>
 
           {/* SECOND GRID  */}
           <div className="h-[20rem] pb-10 rounded-lg bg-white">
+            {/* ORDER SUMMARY  */}
             <div className="flex flex-col w-[100%] p-8">
               <h1 className="text-[18px] font-semibold my-2 tracking-wider">
                 Order Summary
               </h1>
-              <div className="mt-7 font-medium">
-                <p className="my-2 text-[15px] mb-3 tracking-tight flex justify-between">
-                  Order Date <span>2024-07-21</span>
-                </p>
-                <p className="my-2 text-[15px] mb-3 tracking-tight flex justify-between">
-                  Delivery Fee: <span>₦2400.00</span>
-                </p>
+              {DeliveryDetail ? (
+                <>
+                  <div className="mt-7 font-medium">
+                    <p className="my-2 text-[15px] mb-3 tracking-tight flex justify-between">
+                      Order Date <span>{DeliveryDetail.o_date}</span>
+                    </p>
+                    <p className="my-2 text-[15px] mb-3 tracking-tight flex justify-between">
+                      Delivery Fee: <span>₦2400.00</span>
+                    </p>
 
-                <p className="my-2 text-[15px] mb-3 tracking-tight flex justify-between">
-                  Status{" "}
-                  <span>
-                    <span className="inline-flex items-center justify-center rounded-full bg-amber-100 px-2.5 py-0.5 text-amber-700">
-                      <Loader2Icon size={10} className="mr-1" />
-                      <p className="whitespace-nowrap text-sm">Pending</p>
-                    </span>
-                  </span>
-                </p>
-              </div>
-              <hr className="my-3 mt-6" />
-              <p className="my-2 text-[16px] mb-3 font-medium tracking-tight flex justify-between">
-                Total: <span className="font-medium">₦4670.00</span>
-              </p>
+                    <p className="my-2 text-[15px] mb-3 tracking-tight flex justify-between">
+                      Status {/* <span> */}
+                      {DeliveryDetail.status === "0" ? (
+                        <span className="inline-flex items-center justify-center rounded-full bg-amber-100 px-2.5 py-0.5 text-amber-700">
+                          <Loader2Icon size={10} className="mr-1" />
+                          <p className="whitespace-nowrap text-sm">Pending</p>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center justify-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-emerald-700">
+                          <CheckCircle2 size={10} className="mr-1" />
+                          <p className="whitespace-nowrap text-sm">Confirmed</p>
+                        </span>
+                      )}
+                      {/* </span> */}
+                    </p>
+                  </div>
+                  <hr className="my-3 mt-6" />
+                  <p className="my-2 text-[16px] mb-3 font-medium flex justify-between">
+                    Total:{" "}
+                    <span className="font-medium">₦{calculateTotal()}</span>
+                  </p>
+                </>
+              ) : (
+                <div className="flex items-center justify-center font-medium">
+                  Loading...
+                </div>
+              )}
             </div>
-
+            {/* CUSTOMER DETAILS  */}
             <div className="flow-root bg-white py-10 px-6 rounded-lg mt-8">
               <h1 className="text-[18px] font-semibold tracking-wider">
                 Customer details
               </h1>
               <hr className="border-gray-100 my-5" />
 
-              <dl className="-my-3 divide-y divide-gray-100 text-sm">
-                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
-                  <dt className="font-medium text-gray-900">Full Name</dt>
-                  <dd className="text-gray-700 sm:col-span-2">
-                    Abdulrazaq Salihu
-                  </dd>
-                </div>
+              {DeliveryDetail ? (
+                <>
+                  <dl className="-my-3 divide-y divide-gray-100 text-sm">
+                    <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+                      <dt className="font-medium text-gray-900">Full Name</dt>
+                      <dd className="text-gray-700 sm:col-span-2">
+                        {DeliveryDetail.name}
+                      </dd>
+                    </div>
 
-                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
-                  <dt className="font-medium text-gray-900">Phone number</dt>
-                  <dd className="text-gray-700 sm:col-span-2">08085458632</dd>
-                </div>
+                    <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+                      <dt className="font-medium text-gray-900">
+                        Phone number
+                      </dt>
+                      <dd className="text-gray-700 sm:col-span-2">
+                        {DeliveryDetail.mobile}
+                      </dd>
+                    </div>
 
-                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
-                  <dt className="font-medium text-gray-900">Email address</dt>
-                  <dd className="text-gray-700 sm:col-span-2">
-                    abdrzq.salihu@gmail.com
-                  </dd>
+                    <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4">
+                      <dt className="font-medium text-gray-900">
+                        Email address
+                      </dt>
+                      <dd className="text-gray-700 sm:col-span-2">
+                        {DeliveryDetail.email}
+                      </dd>
+                    </div>
+                  </dl>
+                </>
+              ) : (
+                <div className="flex items-center justify-center font-medium">
+                  Loading...
                 </div>
-              </dl>
+              )}
             </div>
-
+            {/* VERIFY ORDER  */}
             <div className="mt-8 px-8 bg-white rounded-lg py-8">
               <h1 className="text-[18px] font-semibold tracking-wider">
                 Verify order

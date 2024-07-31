@@ -40,7 +40,7 @@ function AdminLayout() {
           openNavigation={openNavigation}
           toggleNavigation={toggleNavigation}
         />
-        <div className="mt-10 md:ml-64">
+        <div className="mt-[7rem] md:ml-64">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/dashboard" element={<Dashboard />} />

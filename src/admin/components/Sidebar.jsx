@@ -95,7 +95,10 @@ function Sidebar({ openNavigation, toggleNavigation }) {
               <Link
                 to={`orders`}
                 className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
-                  location.pathname === "/admin/orders" ? "bg-gray-100" : ""
+                  location.pathname === "/admin/orders" ||
+                  /^\/admin\/orders\/orderdetails\/\d+/.test(location.pathname)
+                    ? "bg-gray-100"
+                    : ""
                 }`}
                 onClick={() => {
                   handleClick();
