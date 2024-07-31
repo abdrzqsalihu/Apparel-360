@@ -135,7 +135,7 @@ function Sidebar({ openNavigation, toggleNavigation }) {
               >
                 <div className="flex items-center text-sm font-medium text-gray-800 tracking-tighter">
                   <MessageSquareDot size={16} />
-                  <p className="ml-2">Messages</p>
+                  <p className="ml-2">Feedback & Queries</p>
                 </div>
 
                 <div className="bg-gray-100 font-semibold px-[0.4rem] text-xs rounded-md">
