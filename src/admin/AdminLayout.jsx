@@ -8,6 +8,7 @@ import Products from "./pages/Products";
 import Settings from "./pages/Settings";
 import { useState } from "react";
 import OrderDetails from "./pages/orders/components/OrderDetails";
+import Customers from "./pages/customers/Customers";
 
 function AdminLayout() {
   const [openNavigation, setOpenNavigation] = useState(false);
@@ -49,6 +50,7 @@ function AdminLayout() {
               path="orders/orderdetails/:order_id"
               element={<OrderDetails />}
             />
+            <Route path="/customers" element={<Customers />} />
             <Route path="/products" element={<Products />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
