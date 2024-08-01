@@ -71,11 +71,9 @@ function ProductCard() {
                       <dt className="inline font-medium">Qty available:</dt>
                       <dd className="inline ml-2">{item.qty_available}</dd>
                     </div>
-                    <div className="flex items-start">
-                      <dt className="font-medium">Product desc:</dt>
-                      <dd className="line-clamp-1 ml-2 flex-1">
-                        {item.productdesc}
-                      </dd>
+                    <div className="line-clamp-1">
+                      <dt className="font-medium inline">Product desc:</dt>
+                      <dd className="ml-2 inline">{item.productdesc}</dd>
                     </div>
                   </dl>
                 </div>
