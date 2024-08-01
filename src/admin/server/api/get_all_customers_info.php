@@ -19,7 +19,7 @@ include('../config/config.php');
 
 if ($conn) {
     // Fetch all customers info
-    $sql = "SELECT * FROM users";
+    $sql = "SELECT * FROM users ORDER by id DESC";
     $result = mysqli_query($conn, $sql);
 
     if (mysqli_num_rows($result) > 0) {

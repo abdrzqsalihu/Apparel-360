@@ -19,7 +19,7 @@ include('../config/config.php');
 
 if ($conn) {
     // Fetch all product from the db 
-    $sql = "SELECT * FROM products";
+    $sql = "SELECT * FROM products ORDER by id DESC";
     $result = mysqli_query($conn, $sql);
 
     if (mysqli_num_rows($result) > 0) {
