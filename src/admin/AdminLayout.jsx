@@ -10,6 +10,7 @@ import { useState } from "react";
 import OrderDetails from "./pages/orders/components/OrderDetails";
 import Customers from "./pages/customers/Customers";
 import Messages from "./pages/messages/Messages";
+import Blogs from "./pages/blogs/Blogs";
 
 function AdminLayout() {
   const [openNavigation, setOpenNavigation] = useState(false);
@@ -54,6 +55,7 @@ function AdminLayout() {
             <Route path="/customers" element={<Customers />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/products" element={<Products />} />
+            <Route path="/blogs" element={<Blogs />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>
