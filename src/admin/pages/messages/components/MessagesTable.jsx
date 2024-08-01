@@ -13,9 +13,6 @@ function MessagesTable() {
       headers: {
         "Content-Type": "application/json",
       },
-      // body: JSON.stringify({
-      //   action: "order_details",
-      // }),
       credentials: "include",
     })
       .then((response) => {
