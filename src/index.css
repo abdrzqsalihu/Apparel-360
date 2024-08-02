@@ -8,3 +8,15 @@ body {
   font-family: "Poppins", sans-serif;
   font-style: normal;
 }
+
+.ql-toolbar {
+  @apply bg-gray-100 border rounded-t-lg;
+}
+
+.ql-toolbar .ql-formats {
+  @apply rounded-lg; /* Rounds the edges of the toolbar container */
+}
+
+.ql-toolbar .ql-toolbar {
+  @apply rounded-t-lg; /* Ensure the toolbar itself is rounded */
+}

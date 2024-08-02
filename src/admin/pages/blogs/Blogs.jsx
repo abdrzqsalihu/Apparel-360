@@ -11,7 +11,7 @@ function Blogs() {
         </h1>
 
         <Link
-          to="/shop"
+          to="addblog"
           className="rounded-lg bg-gray-800 text-center py-2 px-4 text-sm text-gray-100 font-light transition hover:bg-gray-700 flex items-center gap-1"
         >
           <Plus size={17} /> Add Blog

@@ -12,6 +12,7 @@ import Customers from "./pages/customers/Customers";
 import Messages from "./pages/messages/Messages";
 import Blogs from "./pages/blogs/Blogs";
 import AddProduct from "./pages/products/AddProduct";
+import AddBlog from "./pages/blogs/AddBlog";
 
 function AdminLayout() {
   const [openNavigation, setOpenNavigation] = useState(false);
@@ -58,6 +59,7 @@ function AdminLayout() {
             <Route path="/products" element={<Products />} />
             <Route path="products/addproduct" element={<AddProduct />} />
             <Route path="/blogs" element={<Blogs />} />
+            <Route path="blogs/addblog" element={<AddBlog />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>

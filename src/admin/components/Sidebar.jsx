@@ -168,7 +168,10 @@ function Sidebar({ openNavigation, toggleNavigation }) {
               <Link
                 to="blogs"
                 className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
-                  location.pathname === "/admin/blogs" ? "bg-gray-100" : ""
+                  location.pathname === "/admin/blogs" ||
+                  location.pathname === "/admin/blogs/addblog"
+                    ? "bg-gray-100"
+                    : ""
                 }`}
               >
                 <BookText size={16} />
