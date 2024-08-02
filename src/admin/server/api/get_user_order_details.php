@@ -3,11 +3,9 @@
 session_name('apparel360_admin_session');
 // Start the session
 session_start();
-// Allow requests from any origin
-header("Access-Control-Allow-Origin: http://localhost:5174");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
-header("Access-Control-Allow-Credentials: true");
+
+// INCLUDE CORS SETTINGS 
+include('../config/cors_settings.php');
 
 // Preflight response for OPTIONS requests
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
