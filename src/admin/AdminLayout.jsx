@@ -5,7 +5,7 @@ import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Orders from "./pages/orders/Orders";
 import Products from "./pages/products/Products";
-import Settings from "./pages/Settings";
+import Settings from "./pages/settings/Settings";
 import { useState } from "react";
 import OrderDetails from "./pages/orders/components/OrderDetails";
 import Customers from "./pages/customers/Customers";
