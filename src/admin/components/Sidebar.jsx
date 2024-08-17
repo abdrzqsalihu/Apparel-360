@@ -2,7 +2,7 @@ import {
   ArrowLeftToLine,
   BarChartBig,
   BookText,
-  FileText,
+  // FileText,
   LayoutDashboard,
   LogOut,
   MessageSquareDot,
@@ -180,7 +180,7 @@ function Sidebar({ openNavigation, toggleNavigation }) {
                 </span>
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 to="invoices"
                 className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
@@ -192,7 +192,7 @@ function Sidebar({ openNavigation, toggleNavigation }) {
                   Invoice
                 </span>
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 to="analytics"
