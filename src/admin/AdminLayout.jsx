@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 
@@ -14,8 +14,15 @@ import Blogs from "./pages/blogs/Blogs";
 import AddProduct from "./pages/products/AddProduct";
 import AddBlog from "./pages/blogs/AddBlog";
 import Analytics from "./pages/analytics/Analytics";
+import Login from "./pages/auth/Login";
 
 function AdminLayout() {
+  const location = useLocation();
+
+  const isOnAuthPage =
+    location.pathname.startsWith("/admin/auth/login") ||
+    location.pathname.startsWith("/admin/auth/createuser");
+
   const [openNavigation, setOpenNavigation] = useState(false);
 
   const toggleNavigation = () => {
@@ -35,18 +42,22 @@ function AdminLayout() {
             : "-translate-x-full md:-translate-x-0"
         }`}
       >
-        <Sidebar
-          openNavigation={openNavigation}
-          toggleNavigation={toggleNavigation}
-        />
+        {!isOnAuthPage && (
+          <Sidebar
+            openNavigation={openNavigation}
+            toggleNavigation={toggleNavigation}
+          />
+        )}
       </div>
 
       <div className="flex flex-col flex-grow ">
-        <Navbar
-          openNavigation={openNavigation}
-          toggleNavigation={toggleNavigation}
-        />
-        <div className="mt-[7rem] md:ml-64">
+        {!isOnAuthPage && (
+          <Navbar
+            openNavigation={openNavigation}
+            toggleNavigation={toggleNavigation}
+          />
+        )}
+        <div className={`${!isOnAuthPage ? "mt-[7rem] md:ml-64" : ""}`}>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/dashboard" element={<Dashboard />} />
@@ -63,6 +74,9 @@ function AdminLayout() {
             <Route path="blogs/addblog" element={<AddBlog />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/settings" element={<Settings />} />
+
+            {/* Auth Routes  */}
+            <Route path="/auth/login" element={<Login />} />
           </Routes>
         </div>
       </div>
