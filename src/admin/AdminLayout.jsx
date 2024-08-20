@@ -15,6 +15,7 @@ import AddProduct from "./pages/products/AddProduct";
 import AddBlog from "./pages/blogs/AddBlog";
 import Analytics from "./pages/analytics/Analytics";
 import Login from "./pages/auth/Login";
+import Users from "./pages/users/Users";
 
 function AdminLayout() {
   const location = useLocation();
@@ -74,6 +75,7 @@ function AdminLayout() {
             <Route path="blogs/addblog" element={<AddBlog />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/users" element={<Users />} />
 
             {/* Auth Routes  */}
             <Route path="/auth/login" element={<Login />} />

@@ -226,14 +226,14 @@ function Sidebar({ openNavigation, toggleNavigation }) {
             </li>
             <li>
               <Link
-                to="admin"
+                to="users"
                 className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
-                  location.pathname === "/admin/admin" ? "bg-gray-100" : ""
+                  location.pathname === "/admin/users" ? "bg-gray-100" : ""
                 }`}
               >
                 <UserPlus size={16} />
                 <span className="text-sm font-medium text-gray-800 ml-2 tracking-tighter">
-                  Admin control
+                  User management
                 </span>
               </Link>
             </li>

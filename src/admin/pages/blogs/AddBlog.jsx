@@ -8,7 +8,7 @@ function AddBlog() {
       <div className="flex items-center justify-between mb-10">
         <h1 className="flex items-center gap-4 text-2xl font-semibold tracking-tight text-gray-800">
           {" "}
-          <Link to={`/admin/products`}>
+          <Link to={`/admin/blogs`}>
             <ArrowLeftCircleIcon size={25} />
           </Link>{" "}
           Add New Blog
