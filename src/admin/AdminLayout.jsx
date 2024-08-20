@@ -20,9 +20,7 @@ import Users from "./pages/users/Users";
 function AdminLayout() {
   const location = useLocation();
 
-  const isOnAuthPage =
-    location.pathname.startsWith("/admin/auth/login") ||
-    location.pathname.startsWith("/admin/auth/createuser");
+  const isOnAuthPage = location.pathname.startsWith("/admin/auth/login");
 
   const [openNavigation, setOpenNavigation] = useState(false);
 
