@@ -13,12 +13,13 @@ import {
   Users,
 } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 // eslint-disable-next-line react/prop-types
 function Sidebar({ openNavigation, toggleNavigation }) {
   const location = useLocation();
-  console.log(location);
+  // console.log(location);
   const sidebarRef = useRef(null);
 
   const handleClickOutside = (event) => {
@@ -41,6 +42,59 @@ function Sidebar({ openNavigation, toggleNavigation }) {
       toggleNavigation();
     }
   };
+
+  // LOGOUT FUNCTION
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(import.meta.env.VITE_REACT_APP_ADMIN_AUTH, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "logout",
+        }),
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Clear the auth token
+        localStorage.removeItem("authToken");
+
+        Swal.fire({
+          title: "Success!",
+          text: "Logout successful",
+          icon: "success",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+
+        // Redirect to login page
+        navigate("/admin/auth/login");
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: "Failed to log out. Please try again.",
+          icon: "error",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "An error occurred during logout. Please try again.",
+        icon: "error",
+        confirmButtonColor: "#374151",
+        confirmButtonText: "Close",
+      });
+    }
+  };
+
   return (
     <div ref={sidebarRef}>
       <div
@@ -241,15 +295,15 @@ function Sidebar({ openNavigation, toggleNavigation }) {
               </Link>
             </li>
             <li>
-              <Link
-                to="/"
+              <button
+                onClick={handleLogout}
                 className="flex w-full items-center rounded-md px-2 py-2 mt-2"
               >
                 <LogOut size={16} />
-                <Link className="text-sm font-medium text-gray-800 ml-2 tracking-tighter">
+                <span className="text-sm font-medium text-gray-800 ml-2 tracking-tighter">
                   Logout
-                </Link>
-              </Link>
+                </span>
+              </button>
             </li>
           </ul>
         </div>

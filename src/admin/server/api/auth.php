@@ -5,7 +5,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // Set a unique session name for each application
-session_name('apparel360_session');
+session_name('apparel360_admin_session');
 // Start the session
 session_start();
 
@@ -35,6 +35,16 @@ function sendJsonResponse($success, $message, $extra = []) {
 
 // Debugging: Log received data
 file_put_contents('php://stderr', print_r($data, TRUE));
+
+// Check if the action is for logout
+if ($action === 'logout') {
+    // Destroy the session to log the user out
+    session_unset();
+    session_destroy();
+
+    // Send a response back to the frontend
+    sendJsonResponse(true, "Logout successful");
+}
 
 // Login logic
 if ($action === 'login') {
