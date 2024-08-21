@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 
@@ -17,9 +17,12 @@ import Analytics from "./pages/analytics/Analytics";
 import Login from "./pages/auth/Login";
 import Users from "./pages/users/Users";
 import AddUser from "./pages/users/components/AddUser";
+import useAuth from "./assets/contexts/AuthContext";
 
 function AdminLayout() {
   const location = useLocation();
+  // eslint-disable-next-line no-unused-vars
+  const isAuthenticated = useAuth(); // Check if authenticated
 
   const isOnAuthPage = location.pathname.startsWith("/admin/auth/login");
 
@@ -78,7 +81,12 @@ function AdminLayout() {
             <Route path="users/adduser" element={<AddUser />} />
 
             {/* Auth Routes  */}
-            <Route path="/auth/login" element={<Login />} />
+            <Route
+              path="/auth/login"
+              element={
+                isAuthenticated ? <Navigate to="/admin/dashboard" /> : <Login />
+              }
+            />
           </Routes>
         </div>
       </div>
