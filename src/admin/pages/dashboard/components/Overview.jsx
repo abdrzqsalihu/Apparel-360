@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   BaggageClaim,
   Eye,
@@ -7,6 +8,28 @@ import {
 } from "lucide-react";
 
 function Overview() {
+  const [stats, setStats] = useState({
+    pageViews: 0,
+    pendingMessages: 0,
+    totalOrders: 0,
+    totalProducts: 0,
+  });
+
+  useEffect(() => {
+    // Fetch data from the PHP backend
+    fetch(import.meta.env.VITE_REACT_APP_ADMIN_STATS)
+      .then((response) => response.json())
+      .then((data) => {
+        setStats({
+          pageViews: data.pageViews,
+          pendingMessages: data.pendingMessages,
+          totalOrders: data.totalOrders,
+          totalProducts: data.totalProducts,
+        });
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+  }, []);
+
   return (
     <div>
       <h1 className="text-2xl font-semibold tracking-tight text-gray-800 mb-6">
@@ -18,7 +41,6 @@ function Overview() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="flex gap-2 items-center">
-                  {" "}
                   <Eye
                     size={22}
                     className="bg-gray-100 p-1 text-gray-700 rounded-sm"
@@ -28,7 +50,6 @@ function Overview() {
                   </span>
                 </p>
               </div>
-
               <div>
                 <span className="rounded-full bg-primary p-3">
                   <Info size={14} className="text-gray-400" />
@@ -36,7 +57,9 @@ function Overview() {
               </div>
             </div>
             <div className="ml-1">
-              <p className="text-2xl mt-0.5 font-medium text-gray-900">0</p>
+              <p className="text-2xl mt-0.5 font-medium text-gray-900">
+                {stats.pageViews}
+              </p>
             </div>
           </div>
         </div>
@@ -45,7 +68,6 @@ function Overview() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="flex gap-2 items-center">
-                  {" "}
                   <MessageSquareDot
                     size={22}
                     className="bg-gray-100 p-1 text-gray-700 rounded-sm"
@@ -55,7 +77,6 @@ function Overview() {
                   </span>
                 </p>
               </div>
-
               <div>
                 <span className="rounded-full bg-primary p-3">
                   <Info size={14} className="text-gray-400" />
@@ -63,7 +84,9 @@ function Overview() {
               </div>
             </div>
             <div className="ml-1">
-              <p className="text-2xl mt-0.5 font-medium text-gray-900">0</p>
+              <p className="text-2xl mt-0.5 font-medium text-gray-900">
+                {stats.pendingMessages}
+              </p>
             </div>
           </div>
         </div>
@@ -72,7 +95,6 @@ function Overview() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="flex gap-2 items-center">
-                  {" "}
                   <BaggageClaim
                     size={22}
                     className="bg-gray-100 p-1 text-gray-700 rounded-sm"
@@ -82,7 +104,6 @@ function Overview() {
                   </span>
                 </p>
               </div>
-
               <div>
                 <span className="rounded-full bg-primary p-3">
                   <Info size={14} className="text-gray-400" />
@@ -90,7 +111,9 @@ function Overview() {
               </div>
             </div>
             <div className="ml-1">
-              <p className="text-2xl mt-0.5 font-medium text-gray-900">0</p>
+              <p className="text-2xl mt-0.5 font-medium text-gray-900">
+                {stats.totalOrders}
+              </p>
             </div>
           </div>
         </div>
@@ -99,7 +122,6 @@ function Overview() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="flex gap-2 items-center">
-                  {" "}
                   <ShoppingBag
                     size={22}
                     className="bg-gray-100 p-1 text-gray-700 rounded-sm"
@@ -109,7 +131,6 @@ function Overview() {
                   </span>
                 </p>
               </div>
-
               <div>
                 <span className="rounded-full bg-primary p-3">
                   <Info size={14} className="text-gray-400" />
@@ -117,7 +138,9 @@ function Overview() {
               </div>
             </div>
             <div className="ml-1">
-              <p className="text-2xl mt-0.5 font-medium text-gray-900">0</p>
+              <p className="text-2xl mt-0.5 font-medium text-gray-900">
+                {stats.totalProducts}
+              </p>
             </div>
           </div>
         </div>

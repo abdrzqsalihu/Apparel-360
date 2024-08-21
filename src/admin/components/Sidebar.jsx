@@ -12,7 +12,7 @@ import {
   UserPlus,
   Users,
 } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -21,6 +21,8 @@ function Sidebar({ openNavigation, toggleNavigation }) {
   const location = useLocation();
   // console.log(location);
   const sidebarRef = useRef(null);
+
+  const [messageCount, setMessageCount] = useState(0);
 
   const handleClickOutside = (event) => {
     if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
@@ -42,6 +44,23 @@ function Sidebar({ openNavigation, toggleNavigation }) {
       toggleNavigation();
     }
   };
+
+  useEffect(() => {
+    // Fetch message count from the API
+    const fetchMessageCount = async () => {
+      try {
+        const response = await fetch(
+          import.meta.env.VITE_REACT_APP_ADMIN_STATS
+        );
+        const data = await response.json();
+        setMessageCount(data.pendingMessages || 0);
+      } catch (error) {
+        console.error("Error fetching message count:", error);
+      }
+    };
+
+    fetchMessageCount();
+  }, []);
 
   // LOGOUT FUNCTION
   const navigate = useNavigate();
@@ -193,7 +212,7 @@ function Sidebar({ openNavigation, toggleNavigation }) {
                 </div>
 
                 <div className="bg-gray-100 font-semibold px-[0.4rem] text-xs rounded-md">
-                  7
+                  {messageCount}
                 </div>
               </Link>
             </li>
