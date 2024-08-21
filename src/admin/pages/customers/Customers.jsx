@@ -1,4 +1,4 @@
-import Pagination from "../../components/Pagination";
+// import Pagination from "../../components/Pagination";
 import CustomersTable from "./component/CustomersTable";
 
 function Customers() {
@@ -9,7 +9,7 @@ function Customers() {
       </h1>
 
       <CustomersTable />
-      <Pagination />
+      {/* <Pagination /> */}
     </div>
   );
 }

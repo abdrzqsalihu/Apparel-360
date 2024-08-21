@@ -1,4 +1,4 @@
-import Pagination from "../../components/Pagination";
+// import Pagination from "../../components/Pagination";
 import MessagesTable from "./components/MessagesTable";
 
 function Messages() {
@@ -9,7 +9,7 @@ function Messages() {
       </h1>
 
       <MessagesTable />
-      <Pagination />
+      {/* <Pagination /> */}
     </div>
   );
 }

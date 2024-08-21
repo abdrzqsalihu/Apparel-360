@@ -1,5 +1,5 @@
 import OrderTable from "./components/OrderTable";
-import Pagination from "../../components/Pagination";
+// import Pagination from "../../components/Pagination";
 
 function Orders() {
   return (
@@ -9,7 +9,7 @@ function Orders() {
       </h1>
 
       <OrderTable />
-      <Pagination />
+      {/* <Pagination /> */}
     </div>
   );
 }
