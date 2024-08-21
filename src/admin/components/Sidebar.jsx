@@ -228,7 +228,10 @@ function Sidebar({ openNavigation, toggleNavigation }) {
               <Link
                 to="users"
                 className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
-                  location.pathname === "/admin/users" ? "bg-gray-100" : ""
+                  location.pathname === "/admin/users" ||
+                  location.pathname === "/admin/users/adduser"
+                    ? "bg-gray-100"
+                    : ""
                 }`}
               >
                 <UserPlus size={16} />
