@@ -1,6 +1,7 @@
 import { CheckCircle2, Loader2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import Pagination from "../../../components/Pagination";
+import { Link } from "react-router-dom";
 
 function MessagesTable() {
   const [MessageDetails, setMessageDetails] = useState([]);
@@ -98,9 +99,12 @@ function MessagesTable() {
                     )}
                   </td>
                   <td className="px-6 pr-0 py-3 whitespace-nowrap">
-                    <button className="inline-block rounded border border-gray-900 px-3 py-2 text-xs font-medium text-gray-800 hover:text-white hover:bg-gray-800">
+                    <Link
+                      to={`messagedetails/${item.id}`}
+                      className="inline-block rounded border border-gray-900 px-3 py-2 text-xs font-medium text-gray-800 hover:text-white hover:bg-gray-800"
+                    >
                       View Message
-                    </button>
+                    </Link>
                   </td>
                 </tr>
               ))}

@@ -203,7 +203,12 @@ function Sidebar({ openNavigation, toggleNavigation }) {
               <Link
                 to={`messages`}
                 className={`flex w-full items-center justify-between rounded-md px-2 py-2 mt-2 ${
-                  location.pathname === "/admin/messages" ? "bg-gray-100" : ""
+                  location.pathname === "/admin/messages" ||
+                  /^\/admin\/messages\/messagedetails\/\d+/.test(
+                    location.pathname
+                  )
+                    ? "bg-gray-100"
+                    : ""
                 }`}
               >
                 <div className="flex items-center text-sm font-medium text-gray-800 tracking-tighter">

@@ -18,6 +18,7 @@ import Login from "./pages/auth/Login";
 import Users from "./pages/users/Users";
 import AddUser from "./pages/users/components/AddUser";
 import useAuth from "./assets/contexts/AuthContext";
+import MessageDetails from "./pages/messages/components/MessageDetails";
 
 function AdminLayout() {
   const location = useLocation();
@@ -71,6 +72,10 @@ function AdminLayout() {
             />
             <Route path="/customers" element={<Customers />} />
             <Route path="/messages" element={<Messages />} />
+            <Route
+              path="/messages/messagedetails/:message_id"
+              element={<MessageDetails />}
+            />
             <Route path="/products" element={<Products />} />
             <Route path="products/addproduct" element={<AddProduct />} />
             <Route path="/blogs" element={<Blogs />} />

@@ -16,8 +16,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 include('../config/config.php');
 
 if ($conn) {
-    // Fetch all messages from the db 
+    $message_id = isset($_GET['message_id']) ? (int)$_GET['message_id'] : null;
+
+    if ($message_id) {
+         // Fetch messages from the db by id
+    $sql = "SELECT * FROM contact_us WHERE id = $message_id";
+    } else {
+        // Fetch all messages from the db 
     $sql = "SELECT * FROM contact_us ORDER by id DESC";
+    }
     $result = mysqli_query($conn, $sql);
 
     if (mysqli_num_rows($result) > 0) {
