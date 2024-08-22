@@ -6,30 +6,27 @@ import {
   Trash2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function MessageDetails() {
   const { message_id } = useParams();
+  const navigate = useNavigate();
 
   const [messageInfo, setMessageInfo] = useState(null); // Object to hold the message details
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(
-      `${
-        import.meta.env.VITE_REACT_APP_ADMIN_GET_ALL_MESSAGES_DATA
-      }?message_id=${message_id}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          action: "order_details",
-        }),
-        credentials: "include",
-      }
-    )
+    fetch(`${import.meta.env.VITE_REACT_APP_ADMIN_GET_ALL_MESSAGES_DATA}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message_id,
+      }),
+      credentials: "include",
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -47,6 +44,80 @@ function MessageDetails() {
         setError(error.message);
       });
   }, [message_id]);
+
+  // Function to delete the message
+  const handleDelete = () => {
+    fetch(`${import.meta.env.VITE_REACT_APP_ADMIN_GET_ALL_MESSAGES_DATA}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message_id,
+      }),
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to delete the message");
+        }
+        // Redirect or show a success message
+        // console.log("Message deleted successfully");
+        Swal.fire({
+          title: "Success!",
+          text: "Message deleted successfully",
+          icon: "success",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+
+        navigate("/admin/messages");
+      })
+      .catch((error) => {
+        console.error("Error deleting message:", error);
+      });
+  };
+
+  // Function to mark as resolved
+  const handleResolve = () => {
+    fetch(`${import.meta.env.VITE_REACT_APP_ADMIN_GET_ALL_MESSAGES_DATA}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message_id,
+        status: 1,
+        action: "update_status",
+      }),
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to update the status");
+        }
+        setMessageInfo((prev) => ({ ...prev, status: "1" }));
+        Swal.fire({
+          title: "Success!",
+          text: "Message status updated successfully",
+          icon: "success",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+
+        navigate("/admin/messages");
+      })
+      .catch((error) => {
+        // console.error("Error updating status:", error);
+        Swal.fire({
+          title: "Error!",
+          text: error,
+          icon: "error",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+      });
+  };
 
   return (
     <section className="mx-auto mb-[14rem] px-5 md:px-8">
@@ -141,14 +212,16 @@ function MessageDetails() {
               <form>
                 <div className="mt-14 flex gap-5">
                   <button
-                    type="submit"
+                    type="button"
+                    onClick={handleDelete}
                     className="rounded-md border bg-red-600 text-center py-3 text-sm text-gray-100 transition hover:opacity-80 w-full flex items-center justify-center gap-2"
                     // disabled
                   >
                     <Trash2 size={14} /> Delete
                   </button>
                   <button
-                    type="submit"
+                    type="button"
+                    onClick={handleResolve}
                     className="rounded-md bg-green-700 text-center py-3 text-sm text-gray-100 transition hover:opacity-80 w-full flex items-center justify-center gap-2"
                     // disabled
                   >
