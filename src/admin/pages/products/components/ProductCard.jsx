@@ -26,7 +26,7 @@ function ProductCard() {
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
           setProductDetails(data);
-          console.log(data);
+          // console.log(data);
         } else {
           setProductDetails([]); // Set to an empty array if no data is returned
         }
