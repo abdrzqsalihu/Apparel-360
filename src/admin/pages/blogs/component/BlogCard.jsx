@@ -1,6 +1,7 @@
 import { EditIcon, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function BlogCard() {
   const [blogDetails, setBlogDetails] = useState([]);
@@ -44,6 +45,56 @@ function BlogCard() {
         setError("Error fetching blog details.");
       });
   }, []);
+
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#16A34A",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(import.meta.env.VITE_REACT_APP_ADMIN_MANAGE_BLOG, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ id }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "success") {
+              setBlogDetails(blogDetails.filter((blog) => blog.id !== id));
+              Swal.fire({
+                title: "Deleted!",
+                text: "Blog has been deleted.",
+                icon: "success",
+                confirmButtonColor: "#374151",
+                confirmButtonText: "Close",
+              });
+            } else {
+              Swal.fire({
+                title: "Error!",
+                text: data.message,
+                icon: "error",
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Error deleting blog:", error);
+            Swal.fire({
+              title: "Error!",
+              text: "Error deleting blog.",
+              icon: "error",
+            });
+          });
+      }
+    });
+  };
 
   return (
     <div className="mx-auto mt-5">
@@ -97,13 +148,13 @@ function BlogCard() {
                       <EditIcon size={17} />
                       Edit
                     </Link>
-                    <Link
-                      to={`/admin/blogs/delete/${item.id}`}
+                    <button
+                      onClick={() => handleDelete(item.id)}
                       className="inline-flex items-center gap-2 rounded-md bg-white px-4 py-2 text-sm text-red-500 hover:bg-red-500 hover:text-white transition shadow-sm"
                     >
                       <Trash2 size={17} />
                       Delete
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </div>
