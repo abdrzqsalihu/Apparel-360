@@ -17,8 +17,8 @@ import Analytics from "./pages/analytics/Analytics";
 import Login from "./pages/auth/Login";
 import Users from "./pages/users/Users";
 import AddUser from "./pages/users/components/AddUser";
-import useAuth from "./assets/contexts/AuthContext";
 import MessageDetails from "./pages/messages/components/MessageDetails";
+import useAuth from "./contexts/AuthContext";
 
 function AdminLayout() {
   const location = useLocation();
