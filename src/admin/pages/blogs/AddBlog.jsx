@@ -293,7 +293,7 @@ function AddBlog() {
                   id="image"
                   onChange={handleFileChange}
                   className="hidden"
-                  required
+                  required={!isEditing} // Field is required only when not editing
                 />
               </div>
             </div>

@@ -217,7 +217,7 @@ function AddProduct() {
       if (result.success) {
         Swal.fire({
           title: "Success!",
-          text: "Blog updated successfully",
+          text: "Product updated successfully",
           icon: "success",
           confirmButtonColor: "#374151",
           confirmButtonText: "Close",
