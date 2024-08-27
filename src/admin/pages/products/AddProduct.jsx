@@ -1,10 +1,13 @@
 import { ArrowLeftCircleIcon, UploadCloudIcon } from "lucide-react";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 
 function AddProduct() {
   const navigate = useNavigate();
+  const { productId } = useParams(); // Get blogId from URL if editing
+  console.log(productId);
+  const [isEditing, setIsEditing] = useState(false);
   const [productData, setProductData] = useState({
     productName: "",
     productDesc: "",
@@ -15,6 +18,39 @@ function AddProduct() {
     image: null,
     imagePreview: "", // State for image preview
   });
+
+  useEffect(() => {
+    if (productId) {
+      setIsEditing(true);
+      fetch(`${import.meta.env.VITE_REACT_APP_ADMIN_GET_ALL_PRODUCTS_DATA}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productId, action: "getProductByID" }),
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setProductData({
+            productName: data.productname,
+            productDesc: data.productdesc,
+            price: data.productprice,
+            quantity: data.qty_available,
+            sizes: Array.isArray(data.sizes)
+              ? data.sizes
+              : data.sizes.split(","), // Ensure it's an array
+            category: data.category,
+            imagePreview: data.productimage
+              ? `/products/${data.productimage}`
+              : "",
+          });
+
+          console.log(data);
+        })
+        .catch((error) => console.error("Error fetching product data:", error));
+    }
+  }, [productId]);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -57,7 +93,7 @@ function AddProduct() {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleAddSubmit = async (e) => {
     e.preventDefault();
 
     const submissionData = new FormData();
@@ -147,6 +183,86 @@ function AddProduct() {
     }
   };
 
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+
+    const submissionData = new FormData();
+    submissionData.append("product_name", productData.productName);
+    submissionData.append("product_desc", productData.productDesc);
+    submissionData.append("price", productData.price);
+    submissionData.append("quantity", productData.quantity);
+    if (productData.sizes.length > 0) {
+      submissionData.append("sizes", productData.sizes.join(","));
+    }
+    if (productData.category) {
+      submissionData.append("category", productData.category);
+    }
+    if (productData.image) {
+      submissionData.append("image", productData.image);
+    }
+    submissionData.append("editid", productId);
+
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_REACT_APP_ADMIN_UPDATE_PRODUCT,
+        {
+          method: "POST",
+          body: submissionData,
+        }
+      );
+
+      const result = await response.json();
+      console.log(result);
+
+      if (result.success) {
+        Swal.fire({
+          title: "Success!",
+          text: "Blog updated successfully",
+          icon: "success",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+
+        navigate("/admin/products");
+
+        setProductData({
+          productName: "",
+          productDesc: "",
+          price: "",
+          quantity: "",
+          sizes: [],
+          category: "",
+          image: null,
+          imagePreview: "", // Reset image preview
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: result.message || "Error! Please try again.",
+          icon: "error",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: error.message,
+        icon: "error",
+        confirmButtonColor: "#374151",
+        confirmButtonText: "Close",
+      });
+    }
+  };
+
+  const handleSubmit = (e) => {
+    if (isEditing) {
+      handleUpdateSubmit(e);
+    } else {
+      handleAddSubmit(e);
+    }
+  };
+
   return (
     <div className="mx-auto px-5 md:px-8">
       <div className="flex items-center justify-between mb-10">
@@ -155,7 +271,7 @@ function AddProduct() {
           <Link to={`/admin/products`}>
             <ArrowLeftCircleIcon size={25} />
           </Link>{" "}
-          Add New Product
+          {isEditing ? "Edit Product" : "Add New Product"}
         </h1>
       </div>
 
@@ -231,6 +347,7 @@ function AddProduct() {
                                   value={size}
                                   id={`Size${size}`}
                                   onChange={handleSizeChange}
+                                  checked={productData.sizes.includes(size)}
                                   className="sr-only"
                                 />
                               </label>
@@ -263,6 +380,7 @@ function AddProduct() {
                                 value={cat}
                                 id={cat}
                                 onChange={handleCategoryChange}
+                                checked={productData.category === cat}
                                 className="size-5 border-gray-300 text-gray-900"
                               />
                             </label>
@@ -289,7 +407,8 @@ function AddProduct() {
                         Product Price
                       </label>
                       <input
-                        type="text"
+                        type="number"
+                        min="1"
                         required
                         id="price"
                         value={productData.price}
@@ -302,7 +421,8 @@ function AddProduct() {
                         Quantity Available
                       </label>
                       <input
-                        type="text"
+                        type="number"
+                        min="1"
                         required
                         id="quantity"
                         value={productData.quantity}
@@ -353,7 +473,7 @@ function AddProduct() {
                   // accept="image/*" // Allow all image formats
                   onChange={handleFileChange}
                   className="hidden"
-                  required
+                  required={!isEditing} // Field is required only when not editing
                 />
               </div>
             </div>
@@ -363,7 +483,7 @@ function AddProduct() {
                 type="submit"
                 className="block rounded-md font-medium bg-gray-800 text-center py-3 text-sm text-gray-100 transition hover:opacity-90 w-[98%] mx-auto"
               >
-                Add product
+                {isEditing ? "Update Product" : "Add Product"}
               </button>
             </div>
           </div>

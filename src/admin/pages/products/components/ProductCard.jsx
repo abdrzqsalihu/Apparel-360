@@ -50,7 +50,7 @@ function ProductCard() {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(import.meta.env.VITE_REACT_APP_ADMIN_MANAGE_PRODUCT, {
+        fetch(import.meta.env.VITE_REACT_APP_ADMIN_DELETE_PRODUCT, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -140,7 +140,7 @@ function ProductCard() {
                 <div>
                   <div className="inline-flex rounded-lg border border-gray-100 bg-gray-100 p-1">
                     <Link
-                      to={``}
+                      to={`/admin/products/edit/${item.id}`}
                       className="inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm text-gray-800 hover:text-gray-700 focus:relative"
                     >
                       <EditIcon size={17} />

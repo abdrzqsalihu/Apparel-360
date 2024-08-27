@@ -231,7 +231,8 @@ function Sidebar({ openNavigation, toggleNavigation }) {
                 to="products"
                 className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
                   location.pathname === "/admin/products" ||
-                  location.pathname === "/admin/products/addproduct"
+                  location.pathname === "/admin/products/addproduct" ||
+                  /^\/admin\/products\/edit\/\d+$/.test(location.pathname)
                     ? "bg-gray-100"
                     : ""
                 }`}
