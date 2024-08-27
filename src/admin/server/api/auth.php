@@ -71,7 +71,7 @@ if ($action === 'login') {
             // Store token in session
             $_SESSION['authToken'] = $token;
             $_SESSION['user_id'] = $user_id;
-            $_SESSION['email'] = $email;
+            $_SESSION['admin_email'] = $email;
 
             sendJsonResponse(true, "Login successful", ["user_id" => $user_id, "token" => $token]);
         } else {
