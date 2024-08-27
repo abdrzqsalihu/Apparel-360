@@ -1,8 +1,10 @@
 import { CircleUser, UploadCloud, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 function GeneralSettings() {
   const [adminDetail, setAdminDetail] = useState({
+    userId: "",
     fullName: "",
     userName: "",
     email: "",
@@ -35,12 +37,67 @@ function GeneralSettings() {
     }
   };
 
-  const handleImageRemove = () => {
-    setAdminDetail((prevAdminData) => ({
-      ...prevAdminData,
-      image: null,
-      imagePreview: "",
-    }));
+  const handleImageRemove = async () => {
+    const confirmRemoval = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to remove your profile picture?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#16A34A",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, remove it!",
+      cancelButtonText: "Cancel",
+    });
+
+    if (confirmRemoval.isConfirmed) {
+      try {
+        // Create a FormData object
+        const formData = new FormData();
+        formData.append("userid", adminDetail.userId);
+        formData.append("removeImage", true);
+
+        const response = await fetch(
+          import.meta.env.VITE_REACT_APP_UPDATE_ADMIN_DETAILS,
+          {
+            method: "POST",
+            body: formData,
+            credentials: "include", // Ensures cookies are sent
+          }
+        );
+
+        const result = await response.json();
+        if (result.success) {
+          setAdminDetail((prevAdminData) => ({
+            ...prevAdminData,
+            image: null,
+            imagePreview: "",
+          }));
+          Swal.fire({
+            title: "Success!",
+            text: "Profile picture removed successfully",
+            icon: "success",
+            confirmButtonColor: "#374151",
+            confirmButtonText: "Close",
+          });
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: result.message || "Error! Please try again.",
+            icon: "error",
+            confirmButtonColor: "#374151",
+            confirmButtonText: "Close",
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "Error!",
+          text: error.message,
+          icon: "error",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+      }
+    }
   };
 
   //   GET ADMIN INFO DATA
@@ -57,13 +114,14 @@ function GeneralSettings() {
       })
       .then((data) => {
         setAdminDetail({
+          userId: data.id,
           fullName: data.fullname,
           userName: data.username,
           email: data.email,
           phone: data.phone,
           role: data.role,
           imagePreview: data.display_img
-            ? `/display_photos/${data.display_img}`
+            ? `/displayphotos/${data.display_img}`
             : "",
         });
 
@@ -74,6 +132,60 @@ function GeneralSettings() {
         // setError(error.message);
       });
   }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const submissionData = new FormData();
+    submissionData.append("fullname", adminDetail.fullName);
+    submissionData.append("username", adminDetail.userName);
+    submissionData.append("email", adminDetail.email);
+    submissionData.append("phone", adminDetail.phone);
+
+    if (adminDetail.image) {
+      submissionData.append("image", adminDetail.image);
+    }
+    submissionData.append("userid", adminDetail.userId);
+
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_REACT_APP_UPDATE_ADMIN_DETAILS,
+        {
+          method: "POST",
+          body: submissionData,
+        }
+      );
+
+      const result = await response.json();
+      // console.log(result);
+
+      if (result.success) {
+        Swal.fire({
+          title: "Success!",
+          text: "Details updated successfully",
+          icon: "success",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: result.message || "Error! Please try again.",
+          icon: "error",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: error.message,
+        icon: "error",
+        confirmButtonColor: "#374151",
+        confirmButtonText: "Close",
+      });
+    }
+  };
   return (
     <div>
       <div className="py-5 pb-8 text-gray-600">
@@ -82,9 +194,7 @@ function GeneralSettings() {
             General details
           </h1>
         </div>
-        <form
-        // onSubmit={handleSubmit}
-        >
+        <form onSubmit={handleSubmit}>
           <div className="space-y-5 mt-5 px-6">
             <div>
               <label className="font-medium text-xs">Display photo</label>
@@ -135,6 +245,7 @@ function GeneralSettings() {
                   <input
                     type="text"
                     required
+                    id="fullName"
                     value={adminDetail.fullName}
                     onChange={handleChange}
                     className="w-full mt-1 px-3 py-2 text-gray-500 outline-none border text-sm focus:border-gray-800 shadow-sm rounded-lg bg-gray-100"
@@ -145,6 +256,7 @@ function GeneralSettings() {
                   <input
                     type="text"
                     required
+                    id="userName"
                     value={adminDetail.userName}
                     onChange={handleChange}
                     className="w-full mt-1 px-3 py-2 text-gray-500 outline-none border text-sm focus:border-gray-800 shadow-sm rounded-lg bg-gray-100"
@@ -157,8 +269,9 @@ function GeneralSettings() {
                 <div className="w-full">
                   <label className="font-medium text-xs">Email</label>
                   <input
-                    type="text"
+                    type="email"
                     required
+                    id="email"
                     value={adminDetail.email}
                     onChange={handleChange}
                     className="w-full mt-1 px-3 py-2 text-gray-500 outline-none border text-sm focus:border-gray-800 shadow-sm rounded-lg bg-gray-100"
@@ -169,6 +282,7 @@ function GeneralSettings() {
                   <input
                     type="text"
                     required
+                    id="phone"
                     value={adminDetail.phone}
                     onChange={handleChange}
                     className="w-full mt-1 px-3 py-2 text-gray-500 outline-none border text-sm focus:border-gray-800 shadow-sm rounded-lg bg-gray-100"
