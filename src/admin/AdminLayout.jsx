@@ -80,11 +80,12 @@ function AdminLayout() {
             <Route path="products/addproduct" element={<AddProduct />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="blogs/addblog" element={<AddBlog />} />
+            <Route path="/blogs/edit/:blogId" element={<AddBlog />} />{" "}
+            {/* Route for editing */}
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/users" element={<Users />} />
             <Route path="users/adduser" element={<AddUser />} />
-
             {/* Auth Routes  */}
             <Route
               path="/auth/login"

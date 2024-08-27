@@ -57,7 +57,7 @@ function BlogCard() {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(import.meta.env.VITE_REACT_APP_ADMIN_MANAGE_BLOG, {
+        fetch(import.meta.env.VITE_REACT_APP_ADMIN_DELETE_BLOG, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

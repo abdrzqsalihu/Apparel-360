@@ -1,11 +1,14 @@
 import { ArrowLeftCircleIcon, UploadCloudIcon } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import QuillEditor from "../../components/QuillEditor";
 import Swal from "sweetalert2";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function AddBlog() {
   const navigate = useNavigate();
+  const { blogId } = useParams(); // Get blogId from URL if editing
+  const [isEditing, setIsEditing] = useState(false);
+
   const [blogData, setBlogData] = useState({
     blogTitle: "",
     blogContent: "",
@@ -13,6 +16,30 @@ function AddBlog() {
     image: null,
     imagePreview: "", // State for image preview
   });
+
+  useEffect(() => {
+    if (blogId) {
+      setIsEditing(true);
+      fetch(`${import.meta.env.VITE_REACT_APP_ADMIN_GET_ALL_BLOGS_DATA}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ blogId, action: "getBlogByID" }),
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setBlogData({
+            blogTitle: data.title,
+            blogContent: data.content,
+            promotionalLink: data.product_link,
+            imagePreview: data.cover_img ? `/blogscover/${data.cover_img}` : "",
+          });
+        })
+        .catch((error) => console.error("Error fetching blog data:", error));
+    }
+  }, [blogId]);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -44,7 +71,7 @@ function AddBlog() {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleAddSubmit = async (e) => {
     e.preventDefault();
 
     const submissionData = new FormData();
@@ -64,56 +91,36 @@ function AddBlog() {
         }
       );
 
-      const contentType = response.headers.get("Content-Type");
-      if (contentType && contentType.includes("application/json")) {
-        const result = await response.json();
+      const result = await response.json();
 
-        // Log the received data from the server
-        // console.log("Received Data from Server:", result);
+      if (result.success) {
+        Swal.fire({
+          title: "Success!",
+          text: "Blog added successfully",
+          icon: "success",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
 
-        if (result.success) {
-          Swal.fire({
-            title: "Success!",
-            text: "Blog added successfully",
-            icon: "success",
-            confirmButtonColor: "#374151",
-            confirmButtonText: "Close",
-          });
+        navigate("/admin/blogs");
 
-          navigate("/admin/blogs");
-
-          setBlogData({
-            blogTitle: "",
-            blogContent: "",
-            promotionalLink: "",
-            image: null,
-            imagePreview: "", // Reset image preview
-          });
-        } else {
-          // alert(result.message || "Error! Please try again.");
-          Swal.fire({
-            title: "Error!",
-            text: result.message || "Error! Please try again.",
-            icon: "error",
-            confirmButtonColor: "#374151",
-            confirmButtonText: "Close",
-          });
-        }
+        setBlogData({
+          blogTitle: "",
+          blogContent: "",
+          promotionalLink: "",
+          image: null,
+          imagePreview: "", // Reset image preview
+        });
       } else {
-        // const text = await response.text();
-        // alert(`Unexpected response format: ${text}`);
         Swal.fire({
           title: "Error!",
-          text: `Something went wrong`,
+          text: result.message || "Error! Please try again.",
           icon: "error",
           confirmButtonColor: "#374151",
           confirmButtonText: "Close",
         });
       }
     } catch (error) {
-      // alert(`There was an error submitting the form: ${error.message}`);
-      // console.log(error.message);
-
       Swal.fire({
         title: "Error!",
         text: error.message,
@@ -123,15 +130,84 @@ function AddBlog() {
       });
     }
   };
+
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+
+    const submissionData = new FormData();
+    submissionData.append("blog_title", blogData.blogTitle);
+    submissionData.append("blog_content", blogData.blogContent);
+    submissionData.append("promotional_link", blogData.promotionalLink);
+    if (blogData.image) {
+      submissionData.append("image", blogData.image);
+    }
+    submissionData.append("editid", blogId);
+
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_REACT_APP_ADMIN_UPDATE_BLOG,
+        {
+          method: "POST",
+          body: submissionData,
+        }
+      );
+
+      const result = await response.json();
+
+      if (result.success) {
+        Swal.fire({
+          title: "Success!",
+          text: "Blog updated successfully",
+          icon: "success",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+
+        navigate("/admin/blogs");
+
+        setBlogData({
+          blogTitle: "",
+          blogContent: "",
+          promotionalLink: "",
+          image: null,
+          imagePreview: "", // Reset image preview
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: result.message || "Error! Please try again.",
+          icon: "error",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: error.message,
+        icon: "error",
+        confirmButtonColor: "#374151",
+        confirmButtonText: "Close",
+      });
+    }
+  };
+
+  const handleSubmit = (e) => {
+    if (isEditing) {
+      handleUpdateSubmit(e);
+    } else {
+      handleAddSubmit(e);
+    }
+  };
+
   return (
     <div className="mx-auto px-5 md:px-8">
       <div className="flex items-center justify-between mb-10">
         <h1 className="flex items-center gap-4 text-2xl font-semibold tracking-tight text-gray-800">
-          {" "}
           <Link to={`/admin/blogs`}>
             <ArrowLeftCircleIcon size={25} />
-          </Link>{" "}
-          Add New Blog
+          </Link>
+          {isEditing ? "Edit Blog" : "Add New Blog"}
         </h1>
       </div>
 
@@ -160,11 +236,6 @@ function AddBlog() {
 
                   <div>
                     <label className="font-medium text-xs">Blog Content</label>
-                    {/* <textarea
-                    required
-                    className="w-full mt-2 h-36 px-3 py-2 resize-none appearance-none outline-none border focus:border-gray-800 bg-gray-100 shadow-sm rounded-lg"
-                  ></textarea> */}
-
                     <QuillEditor
                       value={blogData.blogContent}
                       onChange={handleContentChange}
@@ -176,7 +247,6 @@ function AddBlog() {
                     </label>
                     <input
                       type="text"
-                      required
                       id="promotionalLink"
                       value={blogData.promotionalLink}
                       onChange={handleChange}
@@ -197,7 +267,6 @@ function AddBlog() {
                   htmlFor="image"
                   className="cursor-pointer text-center p-4 md:p-8 flex flex-col items-center"
                 >
-                  {/* Show icon or preview based on state */}
                   {blogData.imagePreview ? (
                     <>
                       <img
@@ -222,7 +291,6 @@ function AddBlog() {
                   type="file"
                   name="image"
                   id="image"
-                  // accept="image/*" // Allow all image formats
                   onChange={handleFileChange}
                   className="hidden"
                   required
@@ -235,7 +303,7 @@ function AddBlog() {
                 type="submit"
                 className="block rounded-md font-medium bg-gray-800 text-center py-3 text-sm text-gray-100 transition hover:opacity-90 w-[98%] mx-auto"
               >
-                Add Blog
+                {isEditing ? "Update Blog" : "Add Blog"}
               </button>
             </div>
           </div>
