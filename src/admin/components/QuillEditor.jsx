@@ -2,6 +2,13 @@ import { useEffect, useRef } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 
+// Helper function to decode HTML entities
+function decodeHtmlEntities(str) {
+  const textarea = document.createElement("textarea");
+  textarea.innerHTML = str;
+  return textarea.value;
+}
+
 // eslint-disable-next-line react/prop-types
 const QuillEditor = ({ value, onChange }) => {
   const editorRef = useRef(null);
@@ -16,6 +23,7 @@ const QuillEditor = ({ value, onChange }) => {
             [{ header: [1, 2, 3, false] }],
             ["bold", "italic", "underline"],
             [{ list: "ordered" }, { list: "bullet" }],
+            // ["link", "image"], // Add more options as needed
           ],
         },
       });
@@ -25,13 +33,15 @@ const QuillEditor = ({ value, onChange }) => {
         const content = quillRef.current.root.innerHTML;
         onChange(content);
       });
-    }
-  }, [onChange]);
 
-  // Set initial content
+      // Set initial content
+      quillRef.current.root.innerHTML = decodeHtmlEntities(value) || "";
+    }
+  }, [onChange, value]);
+
   useEffect(() => {
     if (quillRef.current && value !== quillRef.current.root.innerHTML) {
-      quillRef.current.root.innerHTML = value;
+      quillRef.current.root.innerHTML = decodeHtmlEntities(value);
     }
   }, [value]);
 
@@ -39,7 +49,7 @@ const QuillEditor = ({ value, onChange }) => {
     <div className="mt-2">
       <div
         ref={editorRef}
-        className="h-[12.5rem] bg-gray-100 border  rounded-b-lg  p-2"
+        className="h-[12.5rem] bg-gray-100 border rounded-lg p-2"
       ></div>
     </div>
   );
