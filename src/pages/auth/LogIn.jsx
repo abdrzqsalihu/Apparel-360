@@ -57,7 +57,7 @@ function LogIn() {
       }
     } catch (error) {
       // Handle network or other errors
-      console.error("Login error:", error);
+      // console.error("Login error:", error);
       Swal.fire({
         title: "Error!",
         text: "An error occurred during login. Please try again.",

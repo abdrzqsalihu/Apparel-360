@@ -28,7 +28,7 @@ function ShopDetails() {
         } else {
           setProductDetail(null);
         }
-        console.log(data);
+        // console.log(data);
       })
       .catch((error) => {
         setError(error.message);
@@ -95,16 +95,32 @@ function ShopDetails() {
             confirmButtonColor: "#374151",
             confirmButtonText: "Close",
           });
-          console.log(data);
+          // console.log(data);
           setCartItemCount(data.cartItemCount);
         } else {
-          alert("Error adding product to cart: " + data.message);
-          console.log(data.message);
+          Swal.fire({
+            title: "Error!",
+            text: "Error adding product to cart",
+            icon: "error",
+            confirmButtonColor: "#374151",
+            confirmButtonText: "Close",
+          });
+          //
+          // alert("Error adding product to cart: " + data.message);
+          // console.log(data.message);
         }
       })
       .catch((error) => {
-        alert("Error adding product to cart: " + error.message);
-        console.log(error.message);
+        Swal.fire({
+          title: "Error!",
+          text: "Error adding product to cart: " + error.message,
+          icon: "error",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+        //
+        // alert("Error adding product to cart: " + error.message);
+        // console.log(error.message);
       });
   };
 
@@ -183,10 +199,15 @@ function ShopDetails() {
                       <option value="" disabled>
                         Select a size
                       </option>
-                      <option value="S">S</option>
-                      <option value="M">M</option>
-                      <option value="L">L</option>
-                      <option value="XL">XL</option>
+                      {ProductDetail.sizes &&
+                        ProductDetail.sizes.split(",").map((sizeOption) => (
+                          <option
+                            key={sizeOption.trim()}
+                            value={sizeOption.trim()}
+                          >
+                            {sizeOption.trim()}
+                          </option>
+                        ))}
                     </select>
                   </div>
 

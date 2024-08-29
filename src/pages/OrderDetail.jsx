@@ -38,7 +38,7 @@ function OrderDetail() {
         } else {
           setProductDetail(null);
         }
-        console.log(data);
+        // console.log(data);
       })
       .catch((error) => {
         setError(error.message);
@@ -74,7 +74,7 @@ function OrderDetail() {
         } else {
           setDeliveryDetail(null);
         }
-        console.log(data);
+        // console.log(data);
       })
       .catch((error) => {
         setError(error.message);

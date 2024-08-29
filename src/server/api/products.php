@@ -22,14 +22,14 @@ if ($conn) {
         $result = $stmt->get_result();
     } elseif ($id) {
         // Fetchproducts limited by the id
-        $sql = "SELECT * FROM products WHERE id = ?";
+        $sql = "SELECT * FROM products WHERE id = ? ";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $result = $stmt->get_result();
     } else {
         // Fetch all products
-        $sql = "SELECT * FROM products";
+        $sql = "SELECT * FROM products ORDER BY id DESC";
         $result = mysqli_query($conn, $sql);
     }
 
@@ -44,6 +44,7 @@ if ($conn) {
             $response[$i]['product_desc'] = $row['product_desc'];
             $response[$i]['product_image'] = $row['product_image'];
             $response[$i]['quantity_available'] = $row['quantity_available'];
+            $response[$i]['sizes'] = $row['sizes'];
             $response[$i]['category'] = $row['category'];
             $i++;
         }
