@@ -1,4 +1,43 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
 function Blogs() {
+  const [allBlogs, setAllBlogs] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch(import.meta.env.VITE_REACT_APP_GET_BLOG_DATA)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setAllBlogs(data);
+      })
+      .catch((error) => {
+        setError(error);
+      });
+  }, []);
+
+  const stripHtmlTags = (html) => {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value.replace(/<[^>]*>/g, ""); // Remove HTML tags
+  };
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  // Function to determine grid class based on the index
+  const getGridClass = (index) => {
+    // For simplicity, assume you want the first 2 items to be half-width
+    // and the third item to be full-width, repeating this pattern
+    return index % 3 === 2 ? "col-span-2" : "col-span-1";
+  };
+
   return (
     <div>
       <section className="mt-6">
@@ -9,107 +48,69 @@ function Blogs() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-14 flex-col md:flex-row flex-wrap justify-between item-center mt-10">
-            <div className="md:pr-6">
-              <article className="flex bg-white transition hover:shadow-xl">
-                <div className="rotate-180 p-2 [writing-mode:_vertical-lr]">
-                  <time
-                    dateTime="2022-10-10"
-                    className="flex items-center justify-between gap-4 text-xs font-bold uppercase text-gray-900"
-                  >
-                    <span>2022</span>
-                    <span className="w-px flex-1 bg-gray-900/10"></span>
-                    <span>Oct 10</span>
-                  </time>
-                </div>
-
-                <div className="hidden sm:block sm:basis-56">
-                  <img
-                    alt=""
-                    src="https://images.unsplash.com/photo-1609557927087-f9cf8e88de18?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80"
-                    className="aspect-square h-full w-full object-cover"
-                  />
-                </div>
-
-                <div className="flex flex-1 flex-col justify-between">
-                  <div className="border-s border-gray-900/10 p-4 sm:border-l-transparent sm:p-6">
-                    <a href="#">
-                      <h3 className="font-bold uppercase text-gray-900">
-                        Finding the right guitar for your style - 5 tips
-                      </h3>
-                    </a>
-
-                    <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-700">
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                      Recusandae dolores, possimus pariatur animi temporibus
-                      nesciunt praesentium dolore sed nulla ipsum eveniet
-                      corporis quidem, mollitia itaque minus soluta, voluptates
-                      neque explicabo tempora nisi culpa eius atque dignissimos.
-                      Molestias explicabo corporis voluptatem?
-                    </p>
-                  </div>
-
-                  <div className="sm:flex sm:items-end sm:justify-end">
-                    <a
-                      href="#"
-                      className="block bg-gray-700 px-5 py-3 text-center text-xs font-bold uppercase text-white hover:text-gray-200 transition hover:bg-gray-600"
+          <div
+            className={`grid gap-y-14 mt-10 ${
+              allBlogs.length === 1
+                ? "grid-cols-1"
+                : "grid-cols-1 md:grid-cols-2"
+            }`}
+          >
+            {allBlogs.map((blog, index) => (
+              <div className={`md:pr-7  ${getGridClass(index)}`} key={blog.id}>
+                <article className="flex bg-white transition hover:shadow-xl">
+                  <div className="rotate-180 p-2 [writing-mode:_vertical-lr]">
+                    <time
+                      dateTime={blog.date}
+                      className="flex items-center justify-between gap-4 text-xs font-bold uppercase text-gray-900"
                     >
-                      Read Blog
-                    </a>
-                  </div>
-                </div>
-              </article>
-            </div>
-            <div className="md:pl-6">
-              <article className="flex bg-white transition hover:shadow-xl">
-                <div className="rotate-180 p-2 [writing-mode:_vertical-lr]">
-                  <time
-                    dateTime="2022-10-10"
-                    className="flex items-center justify-between gap-4 text-xs font-bold uppercase text-gray-900"
-                  >
-                    <span>2022</span>
-                    <span className="w-px flex-1 bg-gray-900/10"></span>
-                    <span>Oct 10</span>
-                  </time>
-                </div>
-
-                <div className="hidden sm:block sm:basis-56">
-                  <img
-                    alt=""
-                    src="https://images.unsplash.com/photo-1609557927087-f9cf8e88de18?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80"
-                    className="aspect-square h-full w-full object-cover"
-                  />
-                </div>
-
-                <div className="flex flex-1 flex-col justify-between">
-                  <div className="border-s border-gray-900/10 p-4 sm:border-l-transparent sm:p-6">
-                    <a href="#">
-                      <h3 className="font-bold uppercase text-gray-900">
-                        Finding the right guitar for your style - 5 tips
-                      </h3>
-                    </a>
-
-                    <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-700">
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                      Recusandae dolores, possimus pariatur animi temporibus
-                      nesciunt praesentium dolore sed nulla ipsum eveniet
-                      corporis quidem, mollitia itaque minus soluta, voluptates
-                      neque explicabo tempora nisi culpa eius atque dignissimos.
-                      Molestias explicabo corporis voluptatem?
-                    </p>
+                      <span>{new Date(blog.date).getFullYear()}</span>
+                      <span className="w-px flex-1 bg-gray-900/10"></span>
+                      <span>
+                        {new Date(blog.date).toLocaleDateString(undefined, {
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </span>
+                    </time>
                   </div>
 
-                  <div className="sm:flex sm:items-end sm:justify-end">
-                    <a
-                      href="#"
-                      className="block bg-gray-700 px-5 py-3 text-center text-xs font-bold uppercase text-white hover:text-gray-200 transition hover:bg-gray-600"
-                    >
-                      Read Blog
-                    </a>
+                  <div className="hidden sm:block sm:basis-56">
+                    <img
+                      alt={blog.title}
+                      src={
+                        blog.cover_img
+                          ? `blogscover/${blog.cover_img}`
+                          : "https://via.placeholder.com/150"
+                      }
+                      className="aspect-square h-full w-full object-cover"
+                    />
                   </div>
-                </div>
-              </article>
-            </div>
+
+                  <div className="flex flex-1 flex-col justify-between">
+                    <div className="border-s border-gray-900/10 p-4 sm:border-l-transparent sm:p-6">
+                      <a href="#">
+                        <h3 className="font-bold uppercase text-gray-900">
+                          {blog.title}
+                        </h3>
+                      </a>
+
+                      <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-700">
+                        {stripHtmlTags(blog.content)}
+                      </p>
+                    </div>
+
+                    <div className="sm:flex sm:items-end sm:justify-end">
+                      <Link
+                        to={`${blog.id}`}
+                        className="block bg-gray-700 px-5 py-3 text-center text-xs font-bold uppercase text-white hover:text-gray-200 transition hover:bg-gray-600"
+                      >
+                        Read Blog
+                      </Link>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            ))}
           </div>
         </div>
       </section>
