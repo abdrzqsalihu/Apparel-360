@@ -100,76 +100,84 @@ if ($currentPassword && $newPassword && $confirmNewPassword) {
     $updateValues[] = $newHashedPassword;
 }
 
-// Add the user ID for the WHERE clause
-$updateValues[] = $id;
+// Check if there are fields to update or if the image needs to be removed
+if (!empty($updateFields) || $removeImage || ($file && $file['error'] === UPLOAD_ERR_OK)) {
+    // Add the user ID for the WHERE clause
+    $updateValues[] = $id;
 
-// Construct the update query dynamically
-if (!empty($updateFields)) {
-    $query = "UPDATE admin SET " . implode(', ', $updateFields) . " WHERE id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param(str_repeat('s', count($updateFields)) . 'i', ...$updateValues);
+    // Construct the update query dynamically
+    if (!empty($updateFields)) {
+        $query = "UPDATE admin SET " . implode(', ', $updateFields) . " WHERE id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param(str_repeat('s', count($updateFields)) . 'i', ...$updateValues);
 
-    if ($stmt->execute()) {
-        // Handle image removal and upload
-        // Fetch the old image name
-        $oldImageQuery = "SELECT img FROM admin WHERE id = ?";
-        $oldImageStmt = $conn->prepare($oldImageQuery);
-        $oldImageStmt->bind_param('i', $id);
-        $oldImageStmt->execute();
-        $oldImageStmt->bind_result($oldImageName);
-        $oldImageStmt->fetch();
-        $oldImageStmt->close();
-
-        // Handle image removal request
-        if ($removeImage && $oldImageName) {
-            $filePath = UPLOAD_DIR . $oldImageName;
-            if (file_exists($filePath)) {
-                unlink($filePath);
-            }
-            // Remove image reference from the database
-            $stmt = $conn->prepare("UPDATE admin SET img = NULL WHERE id = ?");
-            $stmt->bind_param('i', $id);
-            $stmt->execute();
+        if (!$stmt->execute()) {
+            echo json_encode(['success' => false, 'message' => 'Failed to update details.']);
+            $stmt->close();
+            $conn->close();
+            exit();
         }
 
-        // Check if a new file was uploaded
-        if ($file && $file['error'] === UPLOAD_ERR_OK) {
-            // Validate file type (allow only specific image types)
-            $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
-            $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-
-            if (!in_array($fileExtension, $allowedTypes)) {
-                echo json_encode(['success' => false, 'message' => 'Invalid image format.']);
-                exit();
-            }
-
-            // Delete the old image file if it exists
-            if ($oldImageName && file_exists(UPLOAD_DIR . $oldImageName)) {
-                unlink(UPLOAD_DIR . $oldImageName);
-            }
-
-            // Generate a unique name for the new image
-            $uniqueFileName = uniqid('img_', true) . '.' . $fileExtension;
-            $targetFilePath = UPLOAD_DIR . $uniqueFileName;
-
-            // Move the uploaded file securely
-            if (move_uploaded_file($file['tmp_name'], $targetFilePath)) {
-                // Update the user record with the new image filename
-                $stmt = $conn->prepare("UPDATE admin SET img = ? WHERE id = ?");
-                $stmt->bind_param('si', $uniqueFileName, $id);
-                $stmt->execute();
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Failed to upload image.']);
-                exit();
-            }
-        }
-
-        echo json_encode(['success' => true, 'message' => 'Details updated successfully.']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to update details.']);
+        $stmt->close();
     }
 
-    $stmt->close();
+    // Handle image removal and upload
+    // Fetch the old image name
+    $oldImageQuery = "SELECT img FROM admin WHERE id = ?";
+    $oldImageStmt = $conn->prepare($oldImageQuery);
+    $oldImageStmt->bind_param('i', $id);
+    $oldImageStmt->execute();
+    $oldImageStmt->bind_result($oldImageName);
+    $oldImageStmt->fetch();
+    $oldImageStmt->close();
+
+    // Handle image removal request
+    if ($removeImage && $oldImageName) {
+        $filePath = UPLOAD_DIR . $oldImageName;
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+        // Remove image reference from the database
+        $stmt = $conn->prepare("UPDATE admin SET img = NULL WHERE id = ?");
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $stmt->close();
+    }
+
+    // Check if a new file was uploaded
+    if ($file && $file['error'] === UPLOAD_ERR_OK) {
+        // Validate file type (allow only specific image types)
+        $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+        $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+        if (!in_array($fileExtension, $allowedTypes)) {
+            echo json_encode(['success' => false, 'message' => 'Invalid image format.']);
+            exit();
+        }
+
+        // Delete the old image file if it exists
+        if ($oldImageName && file_exists(UPLOAD_DIR . $oldImageName)) {
+            unlink(UPLOAD_DIR . $oldImageName);
+        }
+
+        // Generate a unique name for the new image
+        $uniqueFileName = uniqid('img_', true) . '.' . $fileExtension;
+        $targetFilePath = UPLOAD_DIR . $uniqueFileName;
+
+        // Move the uploaded file securely
+        if (move_uploaded_file($file['tmp_name'], $targetFilePath)) {
+            // Update the user record with the new image filename
+            $stmt = $conn->prepare("UPDATE admin SET img = ? WHERE id = ?");
+            $stmt->bind_param('si', $uniqueFileName, $id);
+            $stmt->execute();
+            $stmt->close();
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to upload image.']);
+            exit();
+        }
+    }
+
+    echo json_encode(['success' => true, 'message' => 'Details updated successfully.']);
 } else {
     echo json_encode(['success' => false, 'message' => 'No fields to update.']);
 }
