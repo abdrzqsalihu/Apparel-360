@@ -27,6 +27,7 @@ function Sidebar({ openNavigation, toggleNavigation }) {
   const [adminDetail, setAdminDetail] = useState({
     fullName: "",
     email: "",
+    role: "",
     image: null,
     imagePreview: "", // State for image preview
   });
@@ -68,6 +69,7 @@ function Sidebar({ openNavigation, toggleNavigation }) {
         setAdminDetail({
           fullName: data.fullname,
           email: data.email,
+          role: data.role,
           imagePreview: data.display_img
             ? `/displayphotos/${data.display_img}`
             : "",
@@ -340,22 +342,27 @@ function Sidebar({ openNavigation, toggleNavigation }) {
                 </span>
               </Link>
             </li>
-            <li>
-              <Link
-                to="users"
-                className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
-                  location.pathname === "/admin/users" ||
-                  location.pathname === "/admin/users/adduser"
-                    ? "bg-gray-100"
-                    : ""
-                }`}
-              >
-                <UserPlus size={16} />
-                <span className="text-sm font-medium text-gray-800 ml-2 tracking-tighter">
-                  User management
-                </span>
-              </Link>
-            </li>
+
+            {adminDetail.role === "Super Admin" && (
+              <>
+                <li>
+                  <Link
+                    to="users"
+                    className={`flex w-full items-center rounded-md px-2 py-2 mt-2 ${
+                      location.pathname === "/admin/users" ||
+                      location.pathname === "/admin/users/adduser"
+                        ? "bg-gray-100"
+                        : ""
+                    }`}
+                  >
+                    <UserPlus size={16} />
+                    <span className="text-sm font-medium text-gray-800 ml-2 tracking-tighter">
+                      User management
+                    </span>
+                  </Link>
+                </li>
+              </>
+            )}
             <li>
               <button
                 onClick={handleLogout}
