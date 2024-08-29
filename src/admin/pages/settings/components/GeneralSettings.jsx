@@ -1,8 +1,10 @@
 import { CircleUser, UploadCloud, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 function GeneralSettings() {
+  const navigate = useNavigate();
   const [adminDetail, setAdminDetail] = useState({
     userId: "",
     fullName: "",
@@ -167,6 +169,8 @@ function GeneralSettings() {
           confirmButtonColor: "#374151",
           confirmButtonText: "Close",
         });
+        // reload page
+        navigate("/admin/settings");
       } else {
         Swal.fire({
           title: "Error!",

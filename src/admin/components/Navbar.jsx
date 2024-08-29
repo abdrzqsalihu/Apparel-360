@@ -1,7 +1,42 @@
-import { BadgeHelp, BellDot, MenuIcon } from "lucide-react";
+import { BadgeHelp, BellDot, CircleUser, MenuIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 
 // eslint-disable-next-line react/prop-types
 function Navbar({ toggleNavigation, openNavigation }) {
+  const [adminDetail, setAdminDetail] = useState({
+    fullName: "",
+    email: "",
+    image: null,
+    imagePreview: "", // State for image preview
+  });
+  //   GET ADMIN INFO DATA
+  useEffect(() => {
+    // Fetch admin details from API endpoint
+    fetch(import.meta.env.VITE_REACT_APP_GET_ADMIN_DATA, {
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setAdminDetail({
+          fullName: data.fullname,
+          role: data.role,
+          imagePreview: data.display_img
+            ? `/displayphotos/${data.display_img}`
+            : "",
+        });
+
+        console.log("Fetched user data:", data);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+        // setError(error.message);
+      });
+  }, []);
   return (
     <div className="fixed w-full">
       <div className="flex p-5 border-b items-center justify-between md:justify-end bg-white h-[4.56rem] border-gray-300">
@@ -45,17 +80,28 @@ function Navbar({ toggleNavigation, openNavigation }) {
           <BellDot size={20} className="text-gray-500 cursor-pointer" />
         </div>
         <div className="md:flex items-center gap-2 p-4 hidden cursor-pointer">
-          <img
-            alt=""
-            src="https://images.unsplash.com/photo-1600486913747-55e5470d6f40?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-            className="size-10 rounded-full object-cover"
-          />
+          <>
+            {adminDetail.imagePreview ? (
+              <img
+                alt="display_photo"
+                src={adminDetail.imagePreview}
+                className="size-10 rounded-full object-cover"
+              />
+            ) : (
+              <CircleUser
+                strokeWidth={1}
+                className="size-10 rounded-full text-gray-500"
+              />
+            )}
+          </>
 
           <div className="flex items-center gap-4">
             <p className="text-xs">
-              <strong className="block font-medium">Abdulrazaq Salihu</strong>
+              <strong className="block font-medium">
+                {adminDetail.fullName}
+              </strong>
 
-              <span className="text-gray-500"> Administrator</span>
+              <span className="text-gray-500"> {adminDetail.role}</span>
             </p>
           </div>
         </div>
