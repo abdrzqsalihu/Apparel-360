@@ -15,6 +15,7 @@ import Dashboard from "./pages/Dashboard";
 import OrderDetail from "./pages/OrderDetail";
 import AdminLayout from "./admin/AdminLayout";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 function App() {
   const location = useLocation();
@@ -46,6 +47,7 @@ function App() {
         {/* Admin Route */}
         <Route path="/admin/*" element={<AdminLayout />} />
       </Routes>
+      {!isOnAdminPage && <Footer />}
     </>
   );
 }
