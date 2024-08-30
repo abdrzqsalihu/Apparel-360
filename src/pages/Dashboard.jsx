@@ -9,11 +9,14 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Pagination from "../components/Pagination";
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState("Overview");
   const [userDetail, setUserDetail] = useState(null);
   const [orderDetails, setOrderDetails] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
   const [error, setError] = useState(null);
 
   //   GET USER INFO DATA
@@ -87,6 +90,14 @@ function Dashboard() {
       (orderDetails) => orderDetails.order_date === today
     );
 
+    // Calculate paginated data
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = orderDetails.slice(indexOfFirstItem, indexOfLastItem);
+
+    const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
+
+    const totalPages = Math.ceil(orderDetails.length / itemsPerPage);
     switch (activeTab) {
       case "Overview":
         return (
@@ -162,7 +173,7 @@ function Dashboard() {
 
                   <tbody className="divide-y divide-gray-200 text-left">
                     {todaysOrders.length > 0 ? (
-                      todaysOrders.map((order, index) => (
+                      currentItems.map((order, index) => (
                         <tr key={order.id}>
                           <td className="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
                             {index + 1}.
@@ -279,7 +290,7 @@ function Dashboard() {
                 {orderDetails ? (
                   <>
                     <tbody className="divide-y divide-gray-200 te">
-                      {orderDetails.map((orderDetails, index) => (
+                      {currentItems.map((orderDetails, index) => (
                         <tr key={orderDetails.id}>
                           <td className="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
                             {index + 1}.
@@ -344,6 +355,11 @@ function Dashboard() {
                 )}
               </table>
             </div>
+            <Pagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+            />
           </div>
         );
       case "Profile":
