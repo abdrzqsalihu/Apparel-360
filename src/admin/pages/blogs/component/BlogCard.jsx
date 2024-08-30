@@ -2,10 +2,13 @@ import { EditIcon, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import Pagination from "../../../components/Pagination";
 
 function BlogCard() {
   const [blogDetails, setBlogDetails] = useState([]);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(6);
 
   const stripHtmlTags = (html) => {
     // Create a temporary DOM element to decode HTML entities
@@ -96,6 +99,15 @@ function BlogCard() {
     });
   };
 
+  // Calculate paginated data
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = blogDetails.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
+
+  const totalPages = Math.ceil(blogDetails.length / itemsPerPage);
+
   return (
     <div className="mx-auto mt-5">
       {error && (
@@ -108,7 +120,7 @@ function BlogCard() {
           No blogs found.
         </div>
       ) : (
-        blogDetails.map((item) => (
+        currentItems.map((item) => (
           <div
             key={item.id}
             className="flex flex-col items-center justify-center mb-6 rounded-md bg-white p-4"
@@ -162,6 +174,11 @@ function BlogCard() {
           </div>
         ))
       )}
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 }
