@@ -193,13 +193,20 @@ function OrderDetail() {
                       <dt className="font-medium text-gray-900">Status</dt>
                       <dd className="text-gray-700 sm:col-span-2">
                         {/* {DeliveryDetail.status} */}
-                        {DeliveryDetail.status === "0" ? (
-                          <span className="inline-flex items-center justify-center rounded-full bg-yellow-500 px-2 py-1 text-white">
-                            <p className="whitespace-nowrap text-sm">Pending</p>
+
+                        {DeliveryDetail.status === "cancelled" ? (
+                          <span className="inline-flex items-center justify-center rounded-full bg-red-500 px-2.5 py-1 text-white">
+                            <p className="whitespace-nowrap text-sm">
+                              Cancelled
+                            </p>
+                          </span>
+                        ) : DeliveryDetail.status === "confirmed" ? (
+                          <span className="inline-flex items-center justify-center rounded-full bg-green-500 px-2.5 py-1 text-white">
+                            <p className="whitespace-nowrap text-sm">Success</p>
                           </span>
                         ) : (
-                          <span className="inline-flex items-center justify-center rounded-full bg-green-500 px-2 py-1 text-white">
-                            <p className="whitespace-nowrap text-sm">Success</p>
+                          <span className="inline-flex items-center justify-center rounded-full bg-yellow-500 px-2.5 py-1 text-white">
+                            <p className="whitespace-nowrap text-sm">Pending</p>
                           </span>
                         )}
                       </dd>

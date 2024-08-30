@@ -3,9 +3,11 @@ import {
   Calendar,
   CheckCircle2,
   Loader2Icon,
+  TriangleAlert,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function OrderDetails() {
   const { order_id } = useParams();
@@ -44,7 +46,7 @@ function OrderDetails() {
         } else {
           setProductDetail([]);
         }
-        console.log(data);
+        // console.log(data);
       })
       .catch((error) => {
         setError(error.message);
@@ -87,7 +89,7 @@ function OrderDetails() {
         } else {
           setDeliveryDetail(null);
         }
-        console.log(data);
+        // console.log(data);
       })
       .catch((error) => {
         setError(error.message);
@@ -96,12 +98,98 @@ function OrderDetails() {
 
   const dateInputRef = useRef(null);
 
+  const handleOrderUpdate = (status) => {
+    const deliveryDate = dateInputRef.current.value;
+
+    if (!deliveryDate && status === "confirmed") {
+      Swal.fire({
+        title: "Delivery date not selected",
+        text: "Please select a delivery date",
+        icon: "warning",
+        confirmButtonText: "Close",
+        confirmButtonColor: "#374151",
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: status === "cancelled" ? "Are you sure?" : "Confirm Order",
+      text:
+        status === "cancelled"
+          ? "Do you really want to cancel your order?"
+          : "Do you want to confirm this order?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText:
+        status === "cancelled" ? "Yes, cancel it" : "Yes, confirm",
+      cancelButtonText: "No, go back",
+      confirmButtonColor: status === "cancelled" ? "#d33" : "#16A34A",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`${import.meta.env.VITE_REACT_APP_ADMIN_VERIFY_USER_ORDER}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            order_id: order_id,
+            status: status,
+            delivery_date: deliveryDate,
+          }),
+          credentials: "include",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            if (data.success) {
+              // console.log("Response Data:", data); // Log the response data
+              // Optionally update the UI or redirect the user
+              // console.log("Order updated successfully.");
+              Swal.fire({
+                title: "Success!",
+                text: `Order has been ${status}.`,
+                icon: "success",
+                confirmButtonText: "Close",
+                confirmButtonColor: "#374151",
+              });
+            } else {
+              console.error("Failed to update the order.");
+              Swal.fire({
+                title: "Error",
+                text: "Failed to update the order. Please try again.",
+                icon: "error",
+                confirmButtonText: "Close",
+                confirmButtonColor: "#374151",
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Error updating order:", error);
+            Swal.fire({
+              title: "Error",
+              text: "There was a problem updating the order.",
+              icon: "error",
+              confirmButtonText: "Close",
+              confirmButtonColor: "#374151",
+            });
+          });
+      }
+    });
+  };
+
+  // const dateInputRef = useRef(null);
+
   const handleDateDivClick = () => {
     if (dateInputRef.current) {
       dateInputRef.current.showPicker(); // This will show the date picker in modern browsers
       dateInputRef.current.focus(); // Fallback for browsers that do not support showPicker
     }
   };
+
   return (
     <section className="mx-auto mb-[14rem] px-5 md:px-8 ">
       <div className="mx-auto ">
@@ -210,7 +298,7 @@ function OrderDetails() {
           </div>
 
           {/* SECOND GRID  */}
-          <div className="h-[20rem] pb-10 rounded-lg bg-white">
+          <div className="h-[22rem] pb-10 rounded-lg bg-white">
             {/* ORDER SUMMARY  */}
             <div className="flex flex-col w-[100%] p-8">
               <h1 className="text-[18px] font-semibold my-2 tracking-wider">
@@ -223,20 +311,34 @@ function OrderDetails() {
                       Order Date <span>{DeliveryDetail.o_date}</span>
                     </p>
                     <p className="my-2 text-[15px] mb-3 tracking-tight flex justify-between">
+                      Delivery Date <span>{DeliveryDetail.delivery_date}</span>
+                    </p>
+                    <p className="my-2 text-[15px] mb-3 tracking-tight flex justify-between">
                       Delivery Fee: <span>₦2400.00</span>
                     </p>
 
                     <p className="my-2 text-[15px] mb-3 tracking-tight flex justify-between">
                       Status {/* <span> */}
-                      {DeliveryDetail.status === "0" ? (
-                        <span className="inline-flex items-center justify-center rounded-full bg-amber-100 px-2.5 py-0.5 text-amber-700">
-                          <Loader2Icon size={10} className="mr-1" />
-                          <p className="whitespace-nowrap text-sm">Pending</p>
+                      {DeliveryDetail.status === "cancelled" ? (
+                        <span className="inline-flex items-center justify-center rounded-full border border-red-500 px-2.5 py-0.5 text-red-500">
+                          <TriangleAlert size={10} className="mr-1" />
+                          <span className="whitespace-nowrap text-xs">
+                            Cancelled
+                          </span>
+                        </span>
+                      ) : DeliveryDetail.status === "confirmed" ? (
+                        <span className="inline-flex items-center justify-center rounded-full border border-emerald-500 px-2.5 py-0.5 text-emerald-700">
+                          <CheckCircle2 size={10} className="mr-1" />
+                          <span className="whitespace-nowrap text-xs">
+                            Confirmed
+                          </span>
                         </span>
                       ) : (
-                        <span className="inline-flex items-center justify-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-emerald-700">
-                          <CheckCircle2 size={10} className="mr-1" />
-                          <p className="whitespace-nowrap text-sm">Confirmed</p>
+                        <span className="inline-flex items-center justify-center rounded-full border border-amber-500 px-2.5 py-0.5 text-amber-700">
+                          <Loader2Icon size={10} className="mr-1" />
+                          <span className="whitespace-nowrap text-xs">
+                            Pending
+                          </span>
                         </span>
                       )}
                       {/* </span> */}
@@ -304,7 +406,12 @@ function OrderDetails() {
               <hr className="border-gray-100 my-4" />
               <form>
                 <p className="text-xs text-gray-800 font-medium pb-2">
-                  Select delivery date
+                  {DeliveryDetail &&
+                    (DeliveryDetail.delivery_date === "" ? (
+                      <span>Select a delivery date</span>
+                    ) : (
+                      <span>Select new delivery date</span>
+                    ))}
                 </p>
                 <div className="relative" onClick={handleDateDivClick}>
                   <div className="absolute inset-y-0 start-0 flex items-center ps-3.5">
@@ -313,21 +420,25 @@ function OrderDetails() {
                   <input
                     ref={dateInputRef}
                     type="date"
+                    min={new Date().toISOString().split("T")[0]} // Set the minimum date to today
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full ps-10 p-2.5 cursor-pointer"
                     placeholder="Select date"
+                    required
                   />
                 </div>
 
                 <div className="mt-6 flex gap-5">
                   <button
-                    type="submit"
+                    type="button"
+                    onClick={() => handleOrderUpdate("cancelled")}
                     className="block rounded-md border bg-red-600 text-center py-3 text-sm text-gray-100 transition hover:opacity-80 w-full"
                     // disabled
                   >
                     Cancel order
                   </button>
                   <button
-                    type="submit"
+                    type="button"
+                    onClick={() => handleOrderUpdate("confirmed")}
                     className="block rounded-md bg-green-700 text-center py-3 text-sm text-gray-100 transition hover:opacity-80 w-full"
                     // disabled
                   >

@@ -70,7 +70,7 @@ function Dashboard() {
         // console.log("Fetched user data:", data);
       })
       .catch((error) => {
-        console.error("Error fetching user order data:", error);
+        // console.error("Error fetching user order data:", error);
         setError(error.message);
       });
   }, []);
@@ -180,16 +180,22 @@ function Dashboard() {
                             {order.size}
                           </td>
                           <td className="whitespace-nowrap px-4 py-3 text-gray-700">
-                            {order.status === "0" ? (
-                              <span className="inline-flex items-center justify-center rounded-full bg-yellow-500 px-2.5 py-1 text-white">
+                            {order.status === "cancelled" ? (
+                              <span className="inline-flex items-center justify-center rounded-full bg-red-500 px-2.5 py-1 text-white">
                                 <p className="whitespace-nowrap text-sm">
-                                  Pending
+                                  Cancelled
                                 </p>
                               </span>
-                            ) : (
+                            ) : order.status === "confirmed" ? (
                               <span className="inline-flex items-center justify-center rounded-full bg-green-500 px-2.5 py-1 text-white">
                                 <p className="whitespace-nowrap text-sm">
                                   Success
+                                </p>
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center justify-center rounded-full bg-yellow-500 px-2.5 py-1 text-white">
+                                <p className="whitespace-nowrap text-sm">
+                                  Pending
                                 </p>
                               </span>
                             )}
@@ -291,16 +297,22 @@ function Dashboard() {
                             {orderDetails.size}
                           </td>
                           <td className="whitespace-nowrap px-4 py-3 text-gray-700">
-                            {orderDetails.status === "0" ? (
-                              <span className="inline-flex items-center justify-center rounded-full bg-yellow-500 px-2.5 py-1 text-white">
+                            {orderDetails.status === "cancelled" ? (
+                              <span className="inline-flex items-center justify-center rounded-full bg-red-500 px-2.5 py-1 text-white">
                                 <p className="whitespace-nowrap text-sm">
-                                  Pending
+                                  Cancelled
                                 </p>
                               </span>
-                            ) : (
+                            ) : orderDetails.status === "confirmed" ? (
                               <span className="inline-flex items-center justify-center rounded-full bg-green-500 px-2.5 py-1 text-white">
                                 <p className="whitespace-nowrap text-sm">
                                   Success
+                                </p>
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center justify-center rounded-full bg-yellow-500 px-2.5 py-1 text-white">
+                                <p className="whitespace-nowrap text-sm">
+                                  Pending
                                 </p>
                               </span>
                             )}

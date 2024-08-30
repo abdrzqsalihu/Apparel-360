@@ -1,4 +1,4 @@
-import { CheckCircle2, Loader2Icon } from "lucide-react";
+import { CheckCircle2, Loader2Icon, TriangleAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "../../../components/Pagination";
@@ -85,20 +85,25 @@ function OrderTable() {
                   <td className="px-6 py-4 whitespace-nowrap">{item.mobile}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{item.o_date}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {item.status === "0" ? (
-                      <span className="inline-flex items-center justify-center rounded-full border border-amber-500 px-2.5 py-0.5 text-amber-700">
-                        <Loader2Icon size={10} className="mr-1" />
-
+                    {item.status === "cancelled" ? (
+                      <span className="inline-flex items-center justify-center rounded-full border border-red-500 px-2.5 py-0.5 text-red-500">
+                        <TriangleAlert size={10} className="mr-1" />
                         <span className="whitespace-nowrap text-xs">
-                          Pending
+                          Cancelled
+                        </span>
+                      </span>
+                    ) : item.status === "confirmed" ? (
+                      <span className="inline-flex items-center justify-center rounded-full border border-emerald-500 px-2.5 py-0.5 text-emerald-700">
+                        <CheckCircle2 size={10} className="mr-1" />
+                        <span className="whitespace-nowrap text-xs">
+                          Confirmed
                         </span>
                       </span>
                     ) : (
-                      <span className="inline-flex items-center justify-center rounded-full border border-emerald-500 px-2.5 py-0.5 text-emerald-700">
-                        <CheckCircle2 size={10} className="mr-1" />
-
+                      <span className="inline-flex items-center justify-center rounded-full border border-amber-500 px-2.5 py-0.5 text-amber-700">
+                        <Loader2Icon size={10} className="mr-1" />
                         <span className="whitespace-nowrap text-xs">
-                          Confirmed
+                          Pending
                         </span>
                       </span>
                     )}

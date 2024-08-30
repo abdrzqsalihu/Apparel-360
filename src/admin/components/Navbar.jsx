@@ -30,10 +30,11 @@ function Navbar({ toggleNavigation, openNavigation }) {
             : "",
         });
 
-        console.log("Fetched user data:", data);
+        // console.log("Fetched user data:", data);
       })
+      // eslint-disable-next-line no-unused-vars
       .catch((error) => {
-        console.error("Error fetching user data:", error);
+        // console.error("Error fetching user data:", error);
         // setError(error.message);
       });
   }, []);

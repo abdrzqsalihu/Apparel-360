@@ -91,6 +91,7 @@ if ($conn) {
             'state' => $row['state'],
             'status' => $row['status'],
             'o_date' => $row['o_date'],
+            'delivery_date' => $row['delivery_date'],
         );
     }
     header('Content-Type: application/json');

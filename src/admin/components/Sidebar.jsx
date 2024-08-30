@@ -75,10 +75,11 @@ function Sidebar({ openNavigation, toggleNavigation }) {
             : "",
         });
 
-        console.log("Fetched user data:", data);
+        // console.log("Fetched user data:", data);
       })
+      // eslint-disable-next-line no-unused-vars
       .catch((error) => {
-        console.error("Error fetching user data:", error);
+        // console.error("Error fetching user data:", error);
         // setError(error.message);
       });
   }, []);
@@ -141,7 +142,7 @@ function Sidebar({ openNavigation, toggleNavigation }) {
         });
       }
     } catch (error) {
-      console.error("Error:", error);
+      // console.error("Error:", error);
       Swal.fire({
         title: "Error!",
         text: "An error occurred during logout. Please try again.",
