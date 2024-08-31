@@ -47,35 +47,47 @@ function MessageDetails() {
 
   // Function to delete the message
   const handleDelete = () => {
-    fetch(`${import.meta.env.VITE_REACT_APP_ADMIN_GET_ALL_MESSAGES_DATA}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        message_id,
-      }),
-      credentials: "include",
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to delete the message");
-        }
-        // Redirect or show a success message
-        // console.log("Message deleted successfully");
-        Swal.fire({
-          title: "Success!",
-          text: "Message deleted successfully",
-          icon: "success",
-          confirmButtonColor: "#374151",
-          confirmButtonText: "Close",
-        });
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#16A34A",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`${import.meta.env.VITE_REACT_APP_ADMIN_GET_ALL_MESSAGES_DATA}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message_id,
+          }),
+          credentials: "include",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to delete the message");
+            }
+            // Redirect or show a success message
+            // console.log("Message deleted successfully");
+            Swal.fire({
+              title: "Success!",
+              text: "Message deleted successfully",
+              icon: "success",
+              confirmButtonColor: "#374151",
+              confirmButtonText: "Close",
+            });
 
-        navigate("/admin/messages");
-      })
-      .catch((error) => {
-        console.error("Error deleting message:", error);
-      });
+            navigate("/admin/messages");
+          })
+          .catch((error) => {
+            console.error("Error deleting message:", error);
+          });
+      }
+    });
   };
 
   // Function to mark as resolved
@@ -88,6 +100,47 @@ function MessageDetails() {
       body: JSON.stringify({
         message_id,
         status: 1,
+        action: "update_status",
+      }),
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to update the status");
+        }
+        setMessageInfo((prev) => ({ ...prev, status: "1" }));
+        Swal.fire({
+          title: "Success!",
+          text: "Message status updated successfully",
+          icon: "success",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+
+        navigate("/admin/messages");
+      })
+      .catch((error) => {
+        // console.error("Error updating status:", error);
+        Swal.fire({
+          title: "Error!",
+          text: error,
+          icon: "error",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+      });
+  };
+
+  // Function to mark as resolved
+  const handlePending = () => {
+    fetch(`${import.meta.env.VITE_REACT_APP_ADMIN_GET_ALL_MESSAGES_DATA}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message_id,
+        status: 0,
         action: "update_status",
       }),
       credentials: "include",
@@ -219,14 +272,27 @@ function MessageDetails() {
                   >
                     <Trash2 size={14} /> Delete
                   </button>
-                  <button
-                    type="button"
-                    onClick={handleResolve}
-                    className="rounded-md bg-green-700 text-center py-3 text-sm text-gray-100 transition hover:opacity-80 w-full flex items-center justify-center gap-2"
-                    // disabled
-                  >
-                    <CheckCircleIcon size={14} /> Mark as resolved
-                  </button>
+                  {messageInfo &&
+                    (messageInfo.status === "0" ? (
+                      <button
+                        type="button"
+                        onClick={handleResolve}
+                        className="rounded-md bg-green-700 text-center py-3 text-sm text-gray-100 transition hover:opacity-80 w-full flex items-center justify-center gap-2"
+                        // disabled
+                      >
+                        <CheckCircleIcon size={14} /> Mark as resolved
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handlePending}
+                        className="rounded-md bg-amber-200 text-center py-3 text-sm text-amber-700 transition hover:opacity-80 w-full flex items-center justify-center gap-2"
+                        // disabled
+                      >
+                        <Loader2Icon size={14} />
+                        Set as pending
+                      </button>
+                    ))}
                 </div>
               </form>
             </div>
