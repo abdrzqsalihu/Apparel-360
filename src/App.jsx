@@ -5,7 +5,7 @@ import ShopDetails from "./pages/Products/ShopDetails";
 import ScrollToTop from "./components/ScrollToTop";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
-import Blogs from "./pages/Blogs";
+import Blogs from "./pages/blogs/Blogs";
 import Contact from "./pages/Contact";
 import Faq from "./pages/Faq";
 import LogIn from "./pages/auth/LogIn";
@@ -16,6 +16,7 @@ import OrderDetail from "./pages/OrderDetail";
 import AdminLayout from "./admin/AdminLayout";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import BlogDetails from "./pages/blogs/BlogDetails";
 
 function App() {
   const location = useLocation();
@@ -30,6 +31,7 @@ function App() {
         <Route path="/shop/:id" element={<ShopDetails />} />
         <Route path="/faq" element={<Faq />} />
         <Route path="/blog" element={<Blogs />} />
+        <Route path="/blog/:id" element={<BlogDetails />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/checkout" element={<Checkout />} />

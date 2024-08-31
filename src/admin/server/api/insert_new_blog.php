@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $promotionalLink = htmlspecialchars($_POST['promotional_link'] ?? '', ENT_QUOTES, 'UTF-8');
 
     // Validate input data
-    if (empty($blogTitle) || empty($blogContent) || empty($promotionalLink)) {
+    if (empty($blogTitle) || empty($blogContent)) {
         echo json_encode(['success' => false, 'message' => 'Please fill all required fields.']);
         exit;
     }

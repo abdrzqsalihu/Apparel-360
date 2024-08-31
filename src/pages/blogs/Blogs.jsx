@@ -101,7 +101,7 @@ function Blogs() {
 
                     <div className="sm:flex sm:items-end sm:justify-end">
                       <Link
-                        to={`${blog.id}`}
+                        to={`/blog/${blog.id}`}
                         className="block bg-gray-700 px-5 py-3 text-center text-xs font-bold uppercase text-white hover:text-gray-200 transition hover:bg-gray-600"
                       >
                         Read Blog
