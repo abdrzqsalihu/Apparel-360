@@ -16,7 +16,53 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 // Connect to the database
 include('../config/config.php');
 
-if ($conn) {
+
+// Ensure the request method is POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
+    exit();
+}
+
+// Decode the incoming JSON request body
+$data = json_decode(file_get_contents('php://input'), true);
+$action = isset($data['action']) ? $data['action'] : null;
+$userId = isset($data['userId']) ? (int)$data['userId'] : null;
+
+if (!$conn) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Database connection failed']);
+    exit();
+}
+
+
+if ($action === 'getUserByID' && $userId) {
+  // Fetch a specific user by ID
+  $stmt = $conn->prepare("SELECT * FROM admin WHERE id = ?");
+  $stmt->bind_param("i", $userId);
+
+  if ($stmt->execute()) {
+      $result = $stmt->get_result();
+      if ($row = $result->fetch_assoc()) {
+          $response = [
+            'id' => $row['id'],
+            'fullname' => $row['fullname'],
+            'username' => $row['username'],
+            'email' => $row['email'],
+            'phone' => $row['phone'],
+            'role' => $row['role'],
+          ];
+      } else {
+          http_response_code(404);
+          echo json_encode(['error' => 'User not found']);
+          exit();
+      }
+  } else {
+      http_response_code(500);
+      echo json_encode(['error' => 'Database query failed']);
+      exit();
+  }
+  $stmt->close();
+} else {
     $email = isset($_SESSION['admin_email']) ? $_SESSION['admin_email'] : '';
     
     // Prepare the SQL statement
@@ -39,8 +85,7 @@ if ($conn) {
                     'date_created' => $row['date_created'],
                 );
             }
-            header('Content-Type: application/json');
-            echo json_encode($response, JSON_PRETTY_PRINT);
+          
         } else {
             echo json_encode([]);
         }
@@ -50,9 +95,10 @@ if ($conn) {
     
     // Close the statement
     $stmt->close();
-} else {
-    echo json_encode(['error' => 'Connection Error']);
 }
+
+header('Content-Type: application/json');
+echo json_encode($response, JSON_PRETTY_PRINT);
 
 // Close the connection
 $conn->close();

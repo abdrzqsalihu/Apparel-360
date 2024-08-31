@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 function UsersTable() {
   const [adminDetails, setAdminDetails] = useState([]);
   const [error, setError] = useState(null);
@@ -33,10 +34,67 @@ function UsersTable() {
         // console.log("Fetched user data:", data);
       })
       .catch((error) => {
-        console.error("Error fetching user order data:", error);
+        // console.error("Error fetching user order data:", error);
         setError(error.message);
       });
   }, []);
+
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#16A34A",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(import.meta.env.VITE_REACT_APP_DELETE_ADMIN_DATA, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ id }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "success") {
+              Swal.fire({
+                title: "Deleted!",
+                text: "User has been deleted.",
+                icon: "success",
+                confirmButtonColor: "#374151",
+                confirmButtonText: "Close",
+              });
+              // Update state to remove the deleted admin from the table
+              setAdminDetails((prevDetails) =>
+                prevDetails.filter((admin) => admin.id !== id)
+              );
+            } else {
+              Swal.fire({
+                title: "Error!",
+                text: data.message,
+                icon: "error",
+                confirmButtonColor: "#374151",
+                confirmButtonText: "Close",
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Error deleting account:", error);
+            Swal.fire({
+              title: "Error!",
+              text: "Error deleting user.",
+              icon: "error",
+              confirmButtonColor: "#374151",
+              confirmButtonText: "Close",
+            });
+          });
+      }
+    });
+  };
 
   return (
     <div>
@@ -90,7 +148,7 @@ function UsersTable() {
                       Edit
                     </Link>
                     <button
-                      href="javascript:void()"
+                      onClick={() => handleDelete(item.id)}
                       className="py-2 leading-none px-3 mr-10 font-medium bg-red-600 text-white text-xs hover:border border-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg"
                     >
                       Delete

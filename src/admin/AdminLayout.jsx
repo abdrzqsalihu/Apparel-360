@@ -90,6 +90,7 @@ function AdminLayout() {
             <Route path="/settings" element={<Settings />} />
             <Route path="/users" element={<Users />} />
             <Route path="users/adduser" element={<AddUser />} />
+            <Route path="/users/edit/:userId" element={<AddUser />} />{" "}
             {/* Auth Routes  */}
             <Route
               path="/auth/login"

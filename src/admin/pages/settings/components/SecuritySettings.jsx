@@ -28,7 +28,7 @@ function SecuritySettings() {
           userId: data.id,
         });
 
-        console.log("Fetched user data:", data);
+        // console.log("Fetched user data:", data);
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);

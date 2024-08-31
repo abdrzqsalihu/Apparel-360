@@ -1,12 +1,15 @@
 import { ChevronDown, Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 
 function AddUser() {
   const navigate = useNavigate();
+  const { userId } = useParams(); // Get userId from URL if editing
   const [showPassword, setShowPassword] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
+    userId: "",
     name: "",
     username: "",
     email: "",
@@ -14,6 +17,34 @@ function AddUser() {
     password: "",
     role: "",
   });
+
+  useEffect(() => {
+    if (userId) {
+      setIsEditing(true);
+      fetch(`${import.meta.env.VITE_REACT_APP_GET_ALL_ADMIN_USERS_DATA}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId, action: "getUserByID" }),
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // console.log(data);
+          setFormData({
+            userId: data.id,
+            name: data.fullname,
+            username: data.username,
+            email: data.email,
+            phone: data.phone,
+            password: "",
+            role: data.role,
+          });
+        })
+        .catch((error) => console.error("Error fetching blog data:", error));
+    }
+  }, [userId]);
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevState) => !prevState);
@@ -27,7 +58,7 @@ function AddUser() {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleAddSubmit = async (e) => {
     e.preventDefault();
 
     if (formData.password.length < 6) {
@@ -99,6 +130,78 @@ function AddUser() {
     }
   };
 
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+
+    if (formData.password.length > 1 && formData.password.length < 6) {
+      Swal.fire({
+        title: "Error!",
+        text: "Password must be at least 6 characters long",
+        icon: "error",
+        confirmButtonColor: "#374151",
+        confirmButtonText: "Close",
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_REACT_APP_UPDATE_ADMIN_USER_DETAILS,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+          credentials: "include",
+        }
+      );
+
+      const result = await response.json();
+
+      if (result.success) {
+        Swal.fire({
+          title: "Success!",
+          text: "Account updated successfully",
+          icon: "success",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        }).then(() => {
+          navigate("/admin/users");
+          setFormData({
+            name: "",
+            username: "",
+            email: "",
+            phone: "",
+            password: "",
+            role: "",
+          });
+        });
+      } else {
+        const errorMessage =
+          result.message === "Email already in use by another account"
+            ? "The email is already in use by another account"
+            : "Account creation failed";
+
+        Swal.fire({
+          title: "Error!",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonColor: "#374151",
+          confirmButtonText: "Close",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "Something went wrong. Please try again later.",
+        icon: "error",
+        confirmButtonColor: "#374151",
+        confirmButtonText: "Close",
+      });
+    }
+  };
+
   const roles = [
     "Super Admin",
     "Product Manager",
@@ -106,10 +209,17 @@ function AddUser() {
     "Order Manager",
   ];
 
+  const handleSubmit = (e) => {
+    if (isEditing) {
+      handleUpdateSubmit(e);
+    } else {
+      handleAddSubmit(e);
+    }
+  };
   return (
     <div>
-      <main className="w-full flex flex-col items-center justify-center mt-10 sm:px-4">
-        <div className="w-full space-y-6 text-gray-600 sm:max-w-md">
+      <main className="w-full flex flex-col items-center justify-center mt-10 px-4">
+        <div className="w-full space-y-6 text-gray-600 max-w-md">
           <div className="text-center">
             <ul className="flex flex-col items-center justify-center gap-2 text-[1rem] mt-0 md:text-[1.3rem] font-bold tracking-wider">
               <li>
@@ -118,7 +228,7 @@ function AddUser() {
                   to="/"
                 >
                   <img
-                    className="mb-3 hidden md:block"
+                    className="mb-3 block"
                     src="/logo.svg"
                     width={50}
                     alt="logo"
@@ -129,7 +239,9 @@ function AddUser() {
             </ul>
             <div className="mt-5 space-y-2">
               <h3 className="text-gray-800 text-xl font-semibold md:text-xl tracking-tight">
-                Create a new user account
+                {isEditing
+                  ? "Edit user account details"
+                  : "Create a new user account"}
               </h3>
             </div>
           </div>
@@ -188,7 +300,7 @@ function AddUser() {
                   onChange={handleChange}
                   className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-gray-800 shadow-sm rounded-lg text-sm"
                   placeholder="Password"
-                  required
+                  required={!isEditing}
                 />
                 <div
                   className="absolute inset-y-[3.2rem] end-0 grid place-content-center cursor-pointer px-4"
@@ -228,7 +340,7 @@ function AddUser() {
                 type="submit"
                 className="w-full px-4 py-2 text-white font-medium bg-gray-800 hover:opacity-80 rounded-lg duration-150 text-sm"
               >
-                Create account
+                {isEditing ? "Update account" : "Create account"}
               </button>
             </form>
           </div>
