@@ -8,11 +8,15 @@ import {
   UserCircle,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Pagination from "../components/Pagination";
 
 function Dashboard() {
-  const [activeTab, setActiveTab] = useState("Overview");
+  const location = useLocation(); // Get location object
+  // const [activeTab, setActiveTab] = useState("Overview");
+  const [activeTab, setActiveTab] = useState(
+    location.state?.activeTab || "Overview"
+  );
   const [userDetail, setUserDetail] = useState(null);
   const [orderDetails, setOrderDetails] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);

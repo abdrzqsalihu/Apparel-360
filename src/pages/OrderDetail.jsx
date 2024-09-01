@@ -89,7 +89,7 @@ function OrderDetail() {
             <div>
               <h1 className="text-2xl font-semibold flex gap-4 items-center">
                 {" "}
-                <Link to={`/dashboard`}>
+                <Link to={`/dashboard`} state={{ activeTab: "Orders" }}>
                   <ArrowLeftCircleIcon size={25} />
                 </Link>{" "}
                 Order Details
