@@ -8,7 +8,7 @@ function RecentProducts() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`https://veepals.com/test/userserver/server/api/products.php?limit=4`)
+    fetch(`${import.meta.env.VITE_REACT_APP_GET_PRODUCT_DATA}?limit=4`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
